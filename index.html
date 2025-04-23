@@ -24,11 +24,8 @@
     </div>
   </div>
 
-  <div class="screen-indicator">
-    <span class="dot" data-index="0">●</span>
-    <span class="dot" data-index="1">●</span>
-    <span class="dot" data-index="2">●</span>
-  </div>
+  <!-- NEW: full‐screen invisible overlay to catch clicks and blur background -->
+  <div id="overlay"></div>
 
   <div id="popup-menu" class="popup-menu">
     <ul>
@@ -40,7 +37,12 @@
     </ul>
   </div>
 
+  <div class="screen-indicator">
+    <span class="dot" data-index="0">●</span>
+    <span class="dot" data-index="1">●</span>
+    <span class="dot" data-index="2">●</span>
+  </div>
+
   <div id="toast" class="toast"></div>
 </body>
 </html>
-
