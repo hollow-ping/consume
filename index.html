@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <title>Consume App</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css"/>
   <script defer src="js/main.js"></script>
 </head>
 <body>
-  <div class="screen" id="screen-main">
-    <h1>Drink Logger</h1>
-    <div id="drink-buttons" class="drink-buttons scroll-fade"></div>
-  </div>
-  <div class="screen" id="screen-two" style="display:none;">
-    <h1>Screen Two</h1>
-    <p>Placeholder content for the second screen.</p>
-  </div>
-  <div class="screen" id="screen-three" style="display:none;">
-    <h1>Screen Three</h1>
-    <p>Placeholder content for the third screen.</p>
+  <div id="screens-wrapper">
+    <div class="screen" id="screen-main">
+      <h1>Drink Logger</h1>
+      <div id="drink-buttons" class="drink-buttons scroll-fade"></div>
+    </div>
+    <div class="screen" id="screen-two">
+      <h1>Screen Two</h1>
+      <p>Placeholder content for the second screen.</p>
+    </div>
+    <div class="screen" id="screen-three">
+      <h1>Screen Three</h1>
+      <p>Placeholder content for the third screen.</p>
+    </div>
   </div>
   <div class="screen-indicator">● ● ●</div>
-  <div id="popup-menu" class="popup-menu" style="display:none;">
+  <div id="popup-menu" class="popup-menu">
     <ul>
       <li>15 min ago</li>
       <li>30 min ago</li>
