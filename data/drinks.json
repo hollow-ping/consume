@@ -1,0 +1,62 @@
+[
+  {
+    "drink_category": "Beer",
+    "drink_name": "Light Beer",
+    "units": 0.6,
+    "icon": "beer.svg"
+  },
+  {
+    "drink_category": "Beer",
+    "drink_name": "IPA",
+    "units": 0.75,
+    "icon": "beer.svg"
+  },
+  {
+    "drink_category": "Wine",
+    "drink_name": "Red Wine",
+    "units": 1.2,
+    "icon": "wine.svg"
+  },
+  {
+    "drink_category": "Wine",
+    "drink_name": "White Wine",
+    "units": 1.1,
+    "icon": "wine.svg"
+  },
+  {
+    "drink_category": "Cocktail",
+    "drink_name": "Old Fashioned",
+    "units": 1.5,
+    "icon": "cocktail.svg"
+  },
+  {
+    "drink_category": "Cocktail",
+    "drink_name": "Margarita",
+    "units": 1.4,
+    "icon": "cocktail.svg"
+  },
+  {
+    "drink_category": "Spirits",
+    "drink_name": "Whiskey Shot",
+    "units": 1.0,
+    "icon": "whiskey.svg"
+  },
+  {
+    "drink_category": "Spirits",
+    "drink_name": "Tequila Shot",
+    "units": 1.0,
+    "icon": "whiskey.svg"
+  },
+  {
+    "drink_category": "Mocktail",
+    "drink_name": "Virgin Mojito",
+    "units": 0.0,
+    "icon": "mocktail.svg"
+  },
+  {
+    "drink_category": "Other",
+    "drink_name": "Hard Seltzer",
+    "units": 0.8,
+    "icon": "beer.svg"
+  }
+]
