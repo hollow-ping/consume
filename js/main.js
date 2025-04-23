@@ -3,11 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const screens = document.querySelectorAll('.screen');
   let currentScreen = 0;
   let touchStartX = null;
-  const toast = document.getElementById('toast');
-  const popup = document.getElementById('popup-menu');
-  let lastLog = null;
 
-  // --- SWIPE & DOT NAVIGATION ---
+  const overlay = document.getElementById('overlay');
+  const popup   = document.getElementById('popup-menu');
+  const toast   = document.getElementById('toast');
+  let lastLog   = null;
+
+  // — Swipe / Dot nav —
   function showScreen(idx) {
     wrapper.style.transform = `translateX(-${idx * 100}%)`;
     currentScreen = idx;
@@ -24,28 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     touchStartX = null;
   });
-
-  // Dot clicks
-  document.querySelectorAll('.screen-indicator .dot').forEach(dot => {
-    dot.addEventListener('click', () => {
-      showScreen(parseInt(dot.dataset.index, 10));
-    });
-  });
+  document.querySelectorAll('.screen-indicator .dot')
+    .forEach(dot => dot.addEventListener('click', () => {
+      showScreen(parseInt(dot.dataset.index,10));
+    }));
   showScreen(0);
 
-  // --- DRINK BUTTONS & LOGIC ---
+  // — Fetch & render drink buttons —
   fetch('data/drinks.json')
-    .then(res => {
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
-    })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(drinks => {
       const container = document.getElementById('drink-buttons');
       drinks.forEach(d => {
         const btn = document.createElement('div');
         btn.className = 'drink-btn';
-
-        // full button click logs
         btn.addEventListener('click', () => logDrink(d, btn));
 
         const main = document.createElement('div');
@@ -57,7 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
         extra.textContent = '⋯';
         extra.addEventListener('click', e => {
           e.stopPropagation();
-          popup.style.display = 'block';
+          overlay.style.display = 'block';
+          popup.style.display   = 'block';
         });
 
         btn.append(main, extra);
@@ -65,39 +60,37 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     })
     .catch(err => {
-      console.error('Failed to load drinks.json:', err);
+      console.error('drinks.json load error', err);
       document.getElementById('drink-buttons').innerHTML =
-        '<p style="padding:1rem; text-align:center;">Error loading drinks</p>';
+        '<p style="padding:1rem;text-align:center;">Error loading drinks</p>';
     });
 
-  // Log & animate
+  // — Popup dismiss only via overlay —
+  overlay.addEventListener('click', () => {
+    popup.style.display   = 'none';
+    overlay.style.display = 'none';
+  });
+  popup.addEventListener('click', e => e.stopPropagation());
+
+  // — Log + animate + toast/undo —
   function logDrink(drink, btn) {
     btn.style.transform = 'scale(0.85)';
     setTimeout(() => btn.style.transform = 'scale(1)', 200);
 
     const now = new Date().toISOString();
-    const entry = {
-      timestamp_logged: now,
-      timestamp: now,
-      drink_category: drink.drink_category,
-      drink_name: drink.drink_name,
-      is_custom_name: false,
-      units: drink.units
-    };
-    lastLog = entry;
+    lastLog = { timestamp_logged: now, timestamp: now,
+                drink_category: drink.drink_category,
+                drink_name: drink.drink_name,
+                is_custom_name: false,
+                units: drink.units };
 
     const hist = JSON.parse(localStorage.getItem('drink_log') || '[]');
-    hist.push(entry);
+    hist.push(lastLog);
     localStorage.setItem('drink_log', JSON.stringify(hist));
 
     showToast(`✔️ Logged ${drink.drink_name}`);
   }
 
-  // Popup dismissal
-  document.addEventListener('click', () => { popup.style.display = 'none'; });
-  popup.addEventListener('click', e => e.stopPropagation());
-
-  // Toast & undo
   function showToast(msg) {
     toast.textContent = msg;
     toast.classList.add('show');
@@ -111,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lastLog) {
       const idx = hist.findIndex(x => x.timestamp_logged === lastLog.timestamp_logged);
       if (idx > -1) {
-        hist.splice(idx, 1);
+        hist.splice(idx,1);
         localStorage.setItem('drink_log', JSON.stringify(hist));
         showToast('✔️ Undid');
         setTimeout(hideToast, 2000);
