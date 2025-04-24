@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const popup   = document.getElementById('popup-menu');
   const toast   = document.getElementById('toast');
   let lastLog   = null;
+  let lastClickedDrink = null;
+  let lastClickedButton = null;
 
-  // — Swipe / Dot nav —
+  // SWIPE & DOT NAV
   function showScreen(idx) {
     wrapper.style.transform = `translateX(-${idx * 100}%)`;
     currentScreen = idx;
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }));
   showScreen(0);
 
-  // — Fetch & render drink buttons —
+  // FETCH & RENDER
   fetch('data/drinks.json')
     .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(drinks => {
@@ -51,12 +53,27 @@ document.addEventListener('DOMContentLoaded', () => {
         extra.textContent = '⋯';
         extra.addEventListener('click', e => {
           e.stopPropagation();
+          lastClickedDrink = d;
+          lastClickedButton = btn;
           overlay.style.display = 'block';
           popup.style.display   = 'block';
         });
 
         btn.append(main, extra);
         container.appendChild(btn);
+      });
+
+      // TIME OFFSET HANDLERS
+      document.querySelectorAll('#popup-menu li').forEach(li => {
+        li.addEventListener('click', e => {
+          e.stopPropagation();
+          const mins = parseInt(li.textContent, 10) || 0;
+          const now = new Date();
+          now.setMinutes(now.getMinutes() - mins);
+          logDrinkWithTime(lastClickedDrink, lastClickedButton, now.toISOString());
+          popup.style.display   = 'none';
+          overlay.style.display = 'none';
+        });
       });
     })
     .catch(err => {
@@ -65,32 +82,36 @@ document.addEventListener('DOMContentLoaded', () => {
         '<p style="padding:1rem;text-align:center;">Error loading drinks</p>';
     });
 
-  // — Popup dismiss only via overlay —
+  // POPUP DISMISS
   overlay.addEventListener('click', () => {
     popup.style.display   = 'none';
     overlay.style.display = 'none';
   });
   popup.addEventListener('click', e => e.stopPropagation());
 
-  // — Log + animate + toast/undo —
+  // LOGGING FUNCTIONS
   function logDrink(drink, btn) {
+    logDrinkWithTime(drink, btn, new Date().toISOString());
+  }
+  function logDrinkWithTime(drink, btn, timestamp) {
     btn.style.transform = 'scale(0.85)';
     setTimeout(() => btn.style.transform = 'scale(1)', 200);
-
-    const now = new Date().toISOString();
-    lastLog = { timestamp_logged: now, timestamp: now,
-                drink_category: drink.drink_category,
-                drink_name: drink.drink_name,
-                is_custom_name: false,
-                units: drink.units };
-
+    const entry = {
+      timestamp_logged: new Date().toISOString(),
+      timestamp: timestamp,
+      drink_category: drink.drink_category,
+      drink_name: drink.drink_name,
+      is_custom_name: false,
+      units: drink.units
+    };
+    lastLog = entry;
     const hist = JSON.parse(localStorage.getItem('drink_log') || '[]');
-    hist.push(lastLog);
+    hist.push(entry);
     localStorage.setItem('drink_log', JSON.stringify(hist));
-
     showToast(`✔️ Logged ${drink.drink_name}`);
   }
 
+  // TOAST & UNDO
   function showToast(msg) {
     toast.textContent = msg;
     toast.classList.add('show');
