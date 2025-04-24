@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let lastLog, lastDrink, lastBtn, touchStartX;
   const popupMenuHTML = popup.innerHTML;
 
-  /* SWIPE & DOT NAVIGATION */
+  // Swipe & Dot Navigation
   function showScreen(idx) {
     wrapper.style.transform = `translateX(-${idx * 100}%)`;
   }
@@ -23,82 +23,80 @@ document.addEventListener('DOMContentLoaded', () => {
     touchStartX = null;
   });
   document.querySelectorAll('.screen-indicator .dot')
-    .forEach(d => d.addEventListener('click', () => showScreen(parseInt(d.dataset.index, 10))));
+    .forEach(d => d.addEventListener('click', () => showScreen(parseInt(d.dataset.index,10))));
   showScreen(0);
 
-  /* BIND POPUP MENU HANDLERS */
+  // Bind Popup Menu Offsets & Custom
   function bindPopupMenu() {
     popup.querySelectorAll('li').forEach(li => {
       li.onclick = e => {
         e.stopPropagation();
         const txt = li.textContent.trim();
         if (txt === 'Custom Time') return openCustomPicker();
-        const mins = parseInt(txt, 10) || 0;
-        const dt = new Date();
-        dt.setMinutes(dt.getMinutes() - mins);
-        /* animate the menu item tapped */
         li.style.transform = 'scale(0.85)';
         setTimeout(() => li.style.transform = 'scale(1)', 200);
-        logDrinkWithTime(lastDrink, li, dt.toISOString());
+        const mins = parseInt(txt,10) || 0;
+        const dt = new Date();
+        dt.setMinutes(dt.getMinutes() - mins);
+        logDrinkWithTime(lastDrink, lastBtn, dt.toISOString());
         closePopup();
       };
     });
   }
 
-  /* FETCH & RENDER DRINK BUTTONS */
+  // Fetch & Render Drinks
   fetch('data/drinks.json')
     .then(r => { if (!r.ok) throw r; return r.json(); })
     .then(drinks => {
       const container = document.getElementById('drink-buttons');
-      container.style.position = 'relative';  // restore fade
+      container.style.position = 'relative';
       drinks.forEach(d => {
         const btn = document.createElement('div');
         btn.className = 'drink-btn';
 
-        /* MAIN CLICK AREA */
-        const main = document.createElement('div');
-        main.className = 'drink-btn-content';
-        main.textContent = d.drink_name;
-        main.onclick = () => {
-          /* animate the drink button */
-          btn.style.transform = 'scale(0.85)';
-          setTimeout(() => btn.style.transform = 'scale(1)', 200);
-          logDrink(d, btn);
-        };
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'drink-btn-content';
+        nameDiv.textContent = d.drink_name;
 
-        /* EXTRA ¼ AREA */
         const extra = document.createElement('div');
         extra.className = 'drink-btn-extra';
         extra.textContent = '⋯';
-        extra.onclick = e => {
-          e.stopPropagation();
-          lastDrink = d; lastBtn = btn;
-          popup.innerHTML = popupMenuHTML;
-          bindPopupMenu();
-          overlay.style.display = 'block';
-          popup.style.display   = 'block';
-        };
 
-        btn.append(main, extra);
+        btn.append(nameDiv, extra);
         container.appendChild(btn);
+
+        btn.addEventListener('click', e => {
+          if (e.target.closest('.drink-btn-extra')) {
+            lastDrink = d; lastBtn = btn;
+            wrapper.classList.add('blurred');
+            overlay.style.display = 'block';
+            popup.innerHTML = popupMenuHTML;
+            bindPopupMenu();
+            popup.style.display = 'block';
+          } else {
+            btn.style.transform = 'scale(0.85)';
+            setTimeout(() => btn.style.transform = 'scale(1)', 200);
+            logDrinkWithTime(d, btn, new Date().toISOString());
+          }
+        });
       });
-      bindPopupMenu();
     })
     .catch(err => {
-      console.error('Failed loading drinks:', err);
+      console.error('Load error', err);
       document.getElementById('drink-buttons').innerHTML =
-        '<p style="padding:1rem; text-align:center;">Error loading drinks</p>';
+        '<p style="padding:1rem;text-align:center;">Error loading drinks</p>';
     });
 
-  /* OVERLAY & POPUP MANAGEMENT */
+  // Overlay & Popup
   overlay.onclick = closePopup;
-  popup.onclick   = e => e.stopPropagation();
+  popup.onclick = e => e.stopPropagation();
   function closePopup() {
-    popup.style.display   = 'none';
+    popup.style.display = 'none';
     overlay.style.display = 'none';
+    wrapper.classList.remove('blurred');
   }
 
-  /* CUSTOM TIME PICKER (unchanged) */
+  // Custom Time Picker
   function openCustomPicker() {
     popup.innerHTML = `
       <div class="custom-time-grid">
@@ -128,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (h != null && m != null) {
           const dt = new Date();
           dt.setHours(h, m, 0, 0);
-          /* animate the minute button itself */
           b.style.transform = 'scale(0.85)';
           setTimeout(() => b.style.transform = 'scale(1)', 200);
           logDrinkWithTime(lastDrink, b, dt.toISOString());
@@ -138,10 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* LOG & UNDO */
-  function logDrink(d, btn) {
-    logDrinkWithTime(d, btn, new Date().toISOString());
-  }
+  // Logging & Toast/Undo
   function logDrinkWithTime(d, btn, iso) {
     const entry = {
       timestamp_logged: new Date().toISOString(),
