@@ -89,50 +89,56 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.style.display = 'none';
   }
 
+    // inside your DOMContentLoaded…
+  // (remove the old openCustomPicker & its Set-button code entirely)
   function openCustomPicker() {
-    // build our 3-column picker + Set button
+    // build 3 columns: hours 0–11, hours 12–23, minutes
     popup.innerHTML = `
-      <div class="custom-time-container">
-        <div class="picker-group" id="ampm-group">
-          <button class="picker-btn selected" data-value="AM">AM</button>
-          <button class="picker-btn" data-value="PM">PM</button>
+      <div class="custom-time-grid">
+        <div class="picker-col" id="hour-col1">
+          ${[...Array(12)].map((_,i)=>
+            `<button class="picker-btn" data-hour="${i}">${i}</button>`
+          ).join('')}
         </div>
-        <div class="picker-group" id="hour-group">
-          ${[...Array(12)].map((_,i) => 
-             `<button class="picker-btn" data-value="${i+1}">${i+1}</button>`
-           ).join('')}
+        <div class="picker-col" id="hour-col2">
+          ${[...Array(12)].map((_,i)=>
+            `<button class="picker-btn" data-hour="${i+12}">${i+12}</button>`
+          ).join('')}
         </div>
-        <div class="picker-group" id="minute-group">
-          ${[0,15,30,45].map(m =>
-             `<button class="picker-btn" data-value="${m}">${m.toString().padStart(2,'0')}</button>`
-           ).join('')}
+        <div class="picker-col" id="minute-col">
+          ${[0,15,30,45].map(m=>
+            `<button class="picker-btn" data-minute="${m}">${m.toString().padStart(2,'0')}</button>`
+          ).join('')}
         </div>
-        <button id="custom-time-set" class="picker-set-btn">Set</button>
       </div>`;
-    popup.style.display   = 'block';
+    popup.style.display = 'block';
 
-    // group button selection logic
-    popup.querySelectorAll('.picker-group').forEach(group => {
-      group.addEventListener('click', e => {
-        if (e.target.classList.contains('picker-btn')) {
-          group.querySelectorAll('.picker-btn').forEach(b => b.classList.remove('selected'));
-          e.target.classList.add('selected');
+    let selectedHour = null;
+    let selectedMinute = null;
+
+    popup.querySelectorAll('.picker-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        // hour buttons
+        if (btn.dataset.hour !== undefined) {
+          selectedHour = parseInt(btn.dataset.hour, 10);
+          popup.querySelectorAll('[data-hour]').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        }
+        // minute buttons
+        if (btn.dataset.minute !== undefined) {
+          selectedMinute = parseInt(btn.dataset.minute, 10);
+          popup.querySelectorAll('[data-minute]').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+        }
+        // once both picked, log & close
+        if (selectedHour !== null && selectedMinute !== null) {
+          const dt = new Date();
+          dt.setHours(selectedHour, selectedMinute, 0, 0);
+          logDrinkWithTime(lastDrink, lastBtn, dt.toISOString());
+          closePopup();
         }
       });
-    });
-
-    // Set handler
-    document.getElementById('custom-time-set').addEventListener('click', () => {
-      // read selections
-      const ampm  = popup.querySelector('#ampm-group .selected').dataset.value;
-      const hour  = parseInt(popup.querySelector('#hour-group .selected').dataset.value,10);
-      const minute= parseInt(popup.querySelector('#minute-group .selected').dataset.value,10);
-      let h = hour % 12;
-      if (ampm === 'PM') h += 12;
-      const dt = new Date();
-      dt.setHours(h, minute, 0, 0);
-      logDrinkWithTime(lastDrink, lastBtn, dt.toISOString());
-      closePopup();
     });
   }
 
