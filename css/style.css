@@ -160,3 +160,36 @@ h1 {
 .picker-btn.selected {
   background: black; color: white;
 }
+
+/* 3-column custom-time modal */
+.popup-menu {
+  /* Base modal: covers most of viewport, leaves ~80px at bottom clickable */
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  height: calc(100vh - 80px);
+  background: white;
+  border: 2px solid black;
+  box-sizing: border-box;
+  padding: 1rem;
+  overflow-y: auto;
+  display: none;
+  z-index: 50; /* above overlay */
+}
+
+/* Switch to grid for custom time */
+.popup-menu.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 48px;
+  gap: 0.5rem;
+}
+
+/* Center each button in its cell */
+.popup-menu.grid .picker-btn {
+  align-self: center;
+  justify-self: center;
+}
+
