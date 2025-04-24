@@ -191,3 +191,31 @@ h1 {
 .toast {
   min-width: 300px;
 }
+
+.custom-time-grid {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.picker-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.picker-btn {
+  padding: 0.5rem;
+  border: 2px solid black;
+  background: white;
+  font-size: 1rem;
+  cursor: pointer;
+  min-width: 3rem;
+}
+
+.picker-btn.selected {
+  background: black;
+  color: white;
+}
+
