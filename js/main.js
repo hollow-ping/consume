@@ -1,46 +1,57 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const wrapper   = document.getElementById('screens-wrapper');
-  const screens   = document.querySelectorAll('.screen');
-  const overlay   = document.getElementById('overlay');
-  const popup     = document.getElementById('popup-menu');
-  const toast     = document.getElementById('toast');
-  let   lastLog   = null;
-  let   lastDrink = null;
-  let   lastBtn   = null;
-  let   touchStartX = null;
-
-  // save original menu for restore
+  const wrapper = document.getElementById('screens-wrapper');
+  const screens = document.querySelectorAll('.screen');
+  const overlay = document.getElementById('overlay');
+  const popup   = document.getElementById('popup-menu');
+  const toast   = document.getElementById('toast');
+  let lastLog, lastDrink, lastBtn, touchStartX;
   const popupMenuHTML = popup.innerHTML;
 
+  // — SWIPE & DOT NAVIGATION —
   function showScreen(idx) {
     wrapper.style.transform = `translateX(-${idx * 100}%)`;
   }
-  // swipe & dot nav (unchanged)...
-  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
-  document.addEventListener('touchend',   e => {
-    if (touchStartX === null) return;
+  document.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
+  document.addEventListener('touchend', e => {
+    if (touchStartX == null) return;
     const diff = e.changedTouches[0].screenX - touchStartX;
     if (Math.abs(diff) > 50) {
-      let cur = parseInt(wrapper.style.transform.replace(/[^0-9]/g,''),10) || 0;
-      cur = cur/100;
-      if (diff > 0 && cur > 0) showScreen(cur - 1);
-      else if (diff < 0 && cur < screens.length - 1) showScreen(cur + 1);
+      const curr = Math.round(parseFloat(wrapper.style.transform.replace(/[^0-9.-]/g,''))/100) || 0;
+      if (diff > 0 && curr > 0) showScreen(curr - 1);
+      else if (diff < 0 && curr < screens.length - 1) showScreen(curr + 1);
     }
     touchStartX = null;
   });
   document.querySelectorAll('.screen-indicator .dot')
-    .forEach(dot => dot.addEventListener('click', () => showScreen(parseInt(dot.dataset.index,10))));
+    .forEach(d => d.addEventListener('click', () => showScreen(parseInt(d.dataset.index,10))));
   showScreen(0);
 
-  // fetch & render buttons
+  // — BIND MENU HANDLERS —
+  function bindPopupMenu() {
+    popup.querySelectorAll('li').forEach(li => {
+      li.onclick = e => {
+        e.stopPropagation();
+        const txt = li.textContent.trim();
+        if (txt === 'Custom Time') return openCustomPicker();
+        const mins = parseInt(txt,10) || 0;
+        const dt = new Date();
+        dt.setMinutes(dt.getMinutes() - mins);
+        logDrinkWithTime(lastDrink, lastBtn, dt.toISOString());
+        closePopup();
+      };
+    });
+  }
+
+  // — FETCH & RENDER DRINK BUTTONS —
   fetch('data/drinks.json')
     .then(r => { if (!r.ok) throw r; return r.json(); })
     .then(drinks => {
       const container = document.getElementById('drink-buttons');
+      container.style.position = 'relative';  // ensure fade works
       drinks.forEach(d => {
         const btn = document.createElement('div');
         btn.className = 'drink-btn';
-        btn.addEventListener('click', () => logDrink(d, btn));
+        btn.onclick = () => logDrink(d, btn);
 
         const main = document.createElement('div');
         main.className = 'drink-btn-content';
@@ -49,103 +60,70 @@ document.addEventListener('DOMContentLoaded', () => {
         const extra = document.createElement('div');
         extra.className = 'drink-btn-extra';
         extra.textContent = '⋯';
-        extra.addEventListener('click', e => {
+        extra.onclick = e => {
           e.stopPropagation();
-          lastDrink = d;
-          lastBtn   = btn;
+          lastDrink = d; lastBtn = btn;
+          popup.innerHTML = popupMenuHTML;      // restore menu
+          bindPopupMenu();                      // re-bind handlers
           overlay.style.display = 'block';
           popup.style.display   = 'block';
-        });
+        };
 
         btn.append(main, extra);
         container.appendChild(btn);
       });
-
-      // offset + custom handlers
-      popup.querySelectorAll('li').forEach(li => {
-        li.addEventListener('click', e => {
-          e.stopPropagation();
-          const txt = li.textContent.trim();
-          if (txt === 'Custom Time') {
-            openCustomPicker();
-          } else {
-            const mins = parseInt(txt,10) || 0;
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - mins);
-            logDrinkWithTime(lastDrink, lastBtn, now.toISOString());
-            closePopup();
-          }
-        });
-      });
+      bindPopupMenu();
+    })
+    .catch(err => {
+      console.error('Failed loading drinks:', err);
+      document.getElementById('drink-buttons').innerHTML =
+        '<p style="padding:1rem; text-align:center;">Error loading drinks</p>';
     });
 
-  // close popup
-  overlay.addEventListener('click', closePopup);
-  popup.addEventListener('click', e => e.stopPropagation());
-
+  // — OVERLAY / POPUP MANAGEMENT —
+  overlay.onclick = closePopup;
+  popup.onclick   = e => e.stopPropagation();
   function closePopup() {
-    popup.innerHTML = popupMenuHTML;
     popup.style.display   = 'none';
     overlay.style.display = 'none';
   }
 
-    // inside your DOMContentLoaded…
-  // (remove the old openCustomPicker & its Set-button code entirely)
+  // — CUSTOM TIME PICKER (unchanged) —
   function openCustomPicker() {
-    // build 3 columns: hours 0–11, hours 12–23, minutes
     popup.innerHTML = `
       <div class="custom-time-grid">
-        <div class="picker-col" id="hour-col1">
-          ${[...Array(12)].map((_,i)=>
-            `<button class="picker-btn" data-hour="${i}">${i}</button>`
-          ).join('')}
-        </div>
-        <div class="picker-col" id="hour-col2">
-          ${[...Array(12)].map((_,i)=>
-            `<button class="picker-btn" data-hour="${i+12}">${i+12}</button>`
-          ).join('')}
-        </div>
-        <div class="picker-col" id="minute-col">
-          ${[0,15,30,45].map(m=>
-            `<button class="picker-btn" data-minute="${m}">${m.toString().padStart(2,'0')}</button>`
-          ).join('')}
-        </div>
+        <div class="picker-col">${[...Array(12)].map((_,i)=>`<button class="picker-btn" data-hour="${i}">${i}</button>`).join('')}</div>
+        <div class="picker-col">${[...Array(12)].map((_,i)=>`<button class="picker-btn" data-hour="${i+12}">${i+12}</button>`).join('')}</div>
+        <div class="picker-col">${[0,15,30,45].map(m=>`<button class="picker-btn" data-minute="${m}">${m.toString().padStart(2,'0')}</button>`).join('')}</div>
       </div>`;
     popup.style.display = 'block';
 
-    let selectedHour = null;
-    let selectedMinute = null;
-
-    popup.querySelectorAll('.picker-btn').forEach(btn => {
-      btn.addEventListener('click', e => {
+    let h=null, m=null;
+    popup.querySelectorAll('.picker-btn').forEach(b=>{
+      b.onclick = e => {
         e.stopPropagation();
-        // hour buttons
-        if (btn.dataset.hour !== undefined) {
-          selectedHour = parseInt(btn.dataset.hour, 10);
-          popup.querySelectorAll('[data-hour]').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
+        if (b.dataset.hour != null) {
+          h = +b.dataset.hour;
+          popup.querySelectorAll('[data-hour]').forEach(x=>x.classList.remove('selected'));
+          b.classList.add('selected');
         }
-        // minute buttons
-        if (btn.dataset.minute !== undefined) {
-          selectedMinute = parseInt(btn.dataset.minute, 10);
-          popup.querySelectorAll('[data-minute]').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
+        if (b.dataset.minute != null) {
+          m = +b.dataset.minute;
+          popup.querySelectorAll('[data-minute]').forEach(x=>x.classList.remove('selected'));
+          b.classList.add('selected');
         }
-        // once both picked, log & close
-        if (selectedHour !== null && selectedMinute !== null) {
+        if (h!=null && m!=null) {
           const dt = new Date();
-          dt.setHours(selectedHour, selectedMinute, 0, 0);
+          dt.setHours(h, m, 0, 0);
           logDrinkWithTime(lastDrink, lastBtn, dt.toISOString());
           closePopup();
         }
-      });
+      };
     });
   }
 
-  // logging
-  function logDrink(d, btn) {
-    logDrinkWithTime(d, btn, new Date().toISOString());
-  }
+  // — LOGGING & TOAST/UNDO (unchanged) —
+  function logDrink(d, btn) { logDrinkWithTime(d, btn, new Date().toISOString()); }
   function logDrinkWithTime(d, btn, iso) {
     btn.style.transform = 'scale(0.85)';
     setTimeout(()=>btn.style.transform='scale(1)',200);
@@ -161,19 +139,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const hist = JSON.parse(localStorage.getItem('drink_log')||'[]');
     hist.push(entry);
     localStorage.setItem('drink_log', JSON.stringify(hist));
-    showToast(`✔️ Logged ${d.drink_name}`);
-  }
-
-  // toast & undo
-  function showToast(msg) {
-    toast.textContent = msg;
+    toast.textContent = `✔️ Logged ${d.drink_name}`;
     toast.classList.add('show');
     toast.onclick = () => {
-      const hist = JSON.parse(localStorage.getItem('drink_log')||'[]');
-      const idx = hist.findIndex(x=>x.timestamp_logged===lastLog.timestamp_logged);
-      if(idx>-1){
-        hist.splice(idx,1);
-        localStorage.setItem('drink_log', JSON.stringify(hist));
+      const arr = JSON.parse(localStorage.getItem('drink_log')||'[]');
+      const idx = arr.findIndex(x=>x.timestamp_logged===lastLog.timestamp_logged);
+      if (idx>-1) {
+        arr.splice(idx,1);
+        localStorage.setItem('drink_log', JSON.stringify(arr));
         toast.textContent = '✔️ Undid';
         setTimeout(()=>toast.classList.remove('show'),2000);
       }
