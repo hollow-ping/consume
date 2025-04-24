@@ -7,36 +7,36 @@ document.addEventListener('DOMContentLoaded', () => {
   let lastLog, lastDrink, lastBtn, touchStartX;
   const popupMenuHTML = popup.innerHTML;
 
-  // SWIPE & DOT NAVIGATION
+  /* SWIPE & DOT NAVIGATION */
   function showScreen(idx) {
     wrapper.style.transform = `translateX(-${idx * 100}%)`;
   }
-  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
   document.addEventListener('touchend', e => {
     if (touchStartX == null) return;
     const diff = e.changedTouches[0].screenX - touchStartX;
     if (Math.abs(diff) > 50) {
-      const curr = Math.round(parseFloat(wrapper.style.transform.replace(/[^0-9.-]/g,''))/100) || 0;
+      const curr = Math.round(parseFloat(wrapper.style.transform.replace(/[^0-9.-]/g,'')) / 100) || 0;
       if (diff > 0 && curr > 0) showScreen(curr - 1);
       else if (diff < 0 && curr < screens.length - 1) showScreen(curr + 1);
     }
     touchStartX = null;
   });
   document.querySelectorAll('.screen-indicator .dot')
-    .forEach(d => d.addEventListener('click', () => showScreen(parseInt(d.dataset.index,10))));
+    .forEach(d => d.addEventListener('click', () => showScreen(parseInt(d.dataset.index, 10))));
   showScreen(0);
 
-  // BIND MENU HANDLERS
+  /* BIND POPUP MENU HANDLERS */
   function bindPopupMenu() {
     popup.querySelectorAll('li').forEach(li => {
       li.onclick = e => {
         e.stopPropagation();
         const txt = li.textContent.trim();
         if (txt === 'Custom Time') return openCustomPicker();
-        const mins = parseInt(txt,10) || 0;
+        const mins = parseInt(txt, 10) || 0;
         const dt = new Date();
         dt.setMinutes(dt.getMinutes() - mins);
-        // animate this li
+        /* animate the menu item tapped */
         li.style.transform = 'scale(0.85)';
         setTimeout(() => li.style.transform = 'scale(1)', 200);
         logDrinkWithTime(lastDrink, li, dt.toISOString());
@@ -45,25 +45,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // FETCH & RENDER DRINK BUTTONS
+  /* FETCH & RENDER DRINK BUTTONS */
   fetch('data/drinks.json')
     .then(r => { if (!r.ok) throw r; return r.json(); })
     .then(drinks => {
       const container = document.getElementById('drink-buttons');
-      container.style.position = 'relative';
+      container.style.position = 'relative';  // restore fade
       drinks.forEach(d => {
         const btn = document.createElement('div');
         btn.className = 'drink-btn';
 
-        // log only on main area
+        /* MAIN CLICK AREA */
         const main = document.createElement('div');
         main.className = 'drink-btn-content';
         main.textContent = d.drink_name;
-        main.onclick = () => logDrink(d, btn);
+        main.onclick = () => {
+          /* animate the drink button */
+          btn.style.transform = 'scale(0.85)';
+          setTimeout(() => btn.style.transform = 'scale(1)', 200);
+          logDrink(d, btn);
+        };
 
-        // entire extra area is clickable for menu
+        /* EXTRA ¼ AREA */
         const extra = document.createElement('div');
         extra.className = 'drink-btn-extra';
+        extra.textContent = '⋯';
         extra.onclick = e => {
           e.stopPropagation();
           lastDrink = d; lastBtn = btn;
@@ -72,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
           overlay.style.display = 'block';
           popup.style.display   = 'block';
         };
-        extra.textContent = '⋯';
 
         btn.append(main, extra);
         container.appendChild(btn);
@@ -85,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '<p style="padding:1rem; text-align:center;">Error loading drinks</p>';
     });
 
-  // OVERLAY & POPUP
+  /* OVERLAY & POPUP MANAGEMENT */
   overlay.onclick = closePopup;
   popup.onclick   = e => e.stopPropagation();
   function closePopup() {
@@ -93,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.style.display = 'none';
   }
 
-  // CUSTOM TIME PICKER
+  /* CUSTOM TIME PICKER (unchanged) */
   function openCustomPicker() {
     popup.innerHTML = `
       <div class="custom-time-grid">
@@ -123,9 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (h != null && m != null) {
           const dt = new Date();
           dt.setHours(h, m, 0, 0);
-          // animate the minute button itself
+          /* animate the minute button itself */
           b.style.transform = 'scale(0.85)';
-          setTimeout(()=>b.style.transform='scale(1)',200);
+          setTimeout(() => b.style.transform = 'scale(1)', 200);
           logDrinkWithTime(lastDrink, b, dt.toISOString());
           closePopup();
         }
@@ -133,8 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // LOGGING & TOAST/UNDO
-  function logDrink(d, btn) { logDrinkWithTime(d, btn, new Date().toISOString()); }
+  /* LOG & UNDO */
+  function logDrink(d, btn) {
+    logDrinkWithTime(d, btn, new Date().toISOString());
+  }
   function logDrinkWithTime(d, btn, iso) {
     const entry = {
       timestamp_logged: new Date().toISOString(),
@@ -158,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         arr.splice(idx,1);
         localStorage.setItem('drink_log', JSON.stringify(arr));
         toast.textContent = '✔️ Undid';
-        setTimeout(()=>toast.classList.remove('show'),2000);
+        setTimeout(() => toast.classList.remove('show'), 2000);
       }
     };
   }
