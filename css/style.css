@@ -34,13 +34,13 @@ h1 {
   position: relative; /* for fade hint */
 }
 
-/* Bottom fade hint (increased height) */
+/* Bottom fade hint (now taller) */
 .drink-buttons.scroll-fade::after {
   content: "";
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 60px;
+  height: 100px;   /* increased to cover more of the bottom area */
   width: 100%;
   background: linear-gradient(to bottom, transparent, white);
   pointer-events: none;
@@ -58,25 +58,30 @@ h1 {
   height: 14vh;
   background: white;
   transition: transform 0.2s ease;
-  cursor: pointer;
 }
 
+/* Main tappable area */
 .drink-btn-content {
   width: 75%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
+  cursor: pointer;
 }
 
+/* Entire extra‐zone is clickable */
 .drink-btn-extra {
   width: 25%;
+  height: 100%;
   border-left: 2px solid black;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
   user-select: none;
+  cursor: pointer;
 }
 
 /* Overlay behind popup */
