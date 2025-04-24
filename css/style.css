@@ -193,3 +193,50 @@ h1 {
   justify-self: center;
 }
 
+/* 1) Make the standard offset menu items fill the white box */
+.popup-menu ul {
+  margin: 0;
+  padding: 0;
+}
+.popup-menu li {
+  display: flex;
+  align-items: center;
+  padding: 1.25rem;           /* big tappable area */
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}
+/* remove any extra spacing */
+.popup-menu li + li {
+  margin-top: 0;
+}
+
+/* 2) When we switch into “grid” mode, eliminate gaps and padding */
+.popup-menu.grid {
+  padding: 0;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  /* 24 hours + 4 minutes = 28 total rows */
+  grid-template-rows: repeat(28, 1fr);
+  gap: 0;
+}
+
+/* 3) Make each grid cell (picker-btn) fill its cell completely */
+.popup-menu.grid .picker-btn {
+  border: none;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+/* 4) Optional: visually separate the “minutes” column */
+.popup-menu.grid .picker-btn[data-minute] {
+  background: #f9f9f9;
+}
+
