@@ -34,13 +34,13 @@ h1 {
   position: relative; /* for fade hint */
 }
 
-/* Bottom fade hint */
+/* Bottom fade hint (increased height) */
 .drink-buttons.scroll-fade::after {
   content: "";
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 20px;
+  height: 60px;
   width: 100%;
   background: linear-gradient(to bottom, transparent, white);
   pointer-events: none;
@@ -99,7 +99,6 @@ h1 {
   transform: translate(-50%, -50%);
   background: white;
   border: 2px solid black;
-  z-index: 25;
   width: 80%;
   max-height: 80vh;
   overflow-y: auto;
@@ -117,6 +116,7 @@ h1 {
   border-bottom: 1px solid black;
   font-size: 1.25rem;
   cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 .popup-menu li:last-child {
@@ -143,7 +143,7 @@ h1 {
 .toast {
   visibility: hidden;
   opacity: 0;
-  min-width: 280px;         /* wider to avoid wrapping */
+  min-width: 280px;
   padding: 0.75rem 1.5rem;
   background-color: black;
   color: white;
@@ -184,6 +184,7 @@ h1 {
   background: white;
   font-size: 1rem;
   cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
 .picker-btn.selected {
