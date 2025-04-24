@@ -240,3 +240,50 @@ h1 {
   background: #f9f9f9;
 }
 
+/* FULL-SCREEN-MINUS-BOTTOM Custom-Time Grid */
+.popup-menu {
+  /* base modal */
+  position: fixed;
+  top: 5vh;
+  left: 5vw;
+  width: 90vw;
+  height: 90vh;
+  background: white;
+  border: 2px solid black;
+  box-sizing: border-box;
+  display: none;
+  z-index: 50;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* GRID3 mode */
+.popup-menu.grid3 {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: repeat(12, 1fr); /* 12 equal rows */
+  /* the 4 minute-buttons will each span 3 rows */
+  gap: 0;
+}
+
+/* Full-cell buttons with black borders */
+.popup-menu.grid3 .picker-btn {
+  border: 1px solid black;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pressed state */
+.popup-menu.grid3 .picker-btn.pressed {
+  background: black;
+  color: white;
+}
+
+
