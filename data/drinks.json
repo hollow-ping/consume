@@ -1,72 +1,52 @@
 [
   {
-    "drink_id": "000001",
-    "category": "Beer",
-    "name": "Light Beer",
-    "units": 0.6,
-    "icon": "beer.svg"
+    "drink_category": "Beer",
+    "drink_name": "Light Beer",
+    "units": 0.6
   },
   {
-    "drink_id": "000002",
-    "category": "Beer",
-    "name": "IPA",
-    "units": 0.75,
-    "icon": "beer.svg"
+    "drink_category": "Beer",
+    "drink_name": "IPA",
+    "units": 0.75
   },
   {
-    "drink_id": "000010",
-    "category": "Wine",
-    "name": "Red Wine",
-    "units": 1.2,
-    "icon": "wine.svg"
+    "drink_category": "Wine",
+    "drink_name": "Red Wine",
+    "units": 1.2
   },
   {
-    "drink_id": "000011",
-    "category": "Wine",
-    "name": "White Wine",
-    "units": 1.1,
-    "icon": "wine.svg"
+    "drink_category": "Wine",
+    "drink_name": "White Wine",
+    "units": 1.1
   },
   {
-    "drink_id": "000020",
-    "category": "Cocktail",
-    "name": "Old Fashioned",
-    "units": 1.5,
-    "icon": "cocktail.svg"
+    "drink_category": "Cocktail",
+    "drink_name": "Old Fashioned",
+    "units": 1.5
   },
   {
-    "drink_id": "000021",
-    "category": "Cocktail",
-    "name": "Margarita",
-    "units": 1.4,
-    "icon": "cocktail.svg"
+    "drink_category": "Cocktail",
+    "drink_name": "Margarita",
+    "units": 1.4
   },
   {
-    "drink_id": "000030",
-    "category": "Spirits",
-    "name": "Whiskey Shot",
-    "units": 1.0,
-    "icon": "whiskey.svg"
+    "drink_category": "Spirits",
+    "drink_name": "Whiskey Shot",
+    "units": 1.0
   },
   {
-    "drink_id": "000031",
-    "category": "Spirits",
-    "name": "Tequila Shot",
-    "units": 1.0,
-    "icon": "tequila.svg"
+    "drink_category": "Spirits",
+    "drink_name": "Tequila Shot",
+    "units": 1.0
   },
   {
-    "drink_id": "000040",
-    "category": "Mocktail",
-    "name": "Virgin Mojito",
-    "units": 0.0,
-    "icon": "mocktail.svg"
+    "drink_category": "Mocktail",
+    "drink_name": "Virgin Mojito",
+    "units": 0.0
   },
   {
-    "drink_id": "000050",
-    "category": "Other",
-    "name": "Hard Seltzer",
-    "units": 0.8,
-    "icon": "seltzer.svg"
+    "drink_category": "Other",
+    "drink_name": "Hard Seltzer",
+    "units": 0.8
   }
 ]
