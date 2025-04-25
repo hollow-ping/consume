@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Make absolutely sure overlay & popup are hidden
+  document.getElementById('overlay').style.display = 'none';
+  const p = document.getElementById('popup-menu');
+  p.style.display = 'none';
+  p.classList.remove('grid3');
+  p.innerHTML = `
+    <ul>
+      <li>15 min ago</li>
+      <li>30 min ago</li>
+      <li>45 min ago</li>
+      <li>60 min ago</li>
+      <li>Custom Time</li>
+    </ul>
+  `;
+  
   const wrapper = document.getElementById('screens-wrapper');
   const screens = document.querySelectorAll('.screen');
   const overlay = document.getElementById('overlay');
