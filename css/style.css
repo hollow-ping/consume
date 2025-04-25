@@ -8,7 +8,7 @@ body {
 }
 h1 { margin: 0.5rem 1rem; }
 
-/* slider */
+/* === Screen slider === */
 #screens-wrapper {
   display: flex;
   height: 100vh;
@@ -18,10 +18,10 @@ h1 { margin: 0.5rem 1rem; }
   width: 100vw;
   flex-shrink: 0;
   box-sizing: border-box;
-  padding-bottom: 40px;
+  padding-bottom: 40px; /* room for dots + toast */
 }
 
-/* drink list */
+/* === Drink list === */
 .drink-buttons {
   height: calc(100vh - 4rem);
   overflow-y: auto;
@@ -29,24 +29,24 @@ h1 { margin: 0.5rem 1rem; }
   position: relative;
 }
 
-/* fixed bottom fade: exactly one button height = 14vh */
+/* === Fixed bottom fade (one button height) === */
 .bottom-fade {
   position: fixed;
   left: 1rem;
   right: 1rem;
-  bottom: 60px;      /* above toast */
-  height: 14vh;
+  bottom: 4rem;    /* aligns with bottom of .drink-buttons */
+  height: 12vh;    /* one button tall now */
   background: linear-gradient(to bottom, transparent, white);
   pointer-events: none;
   z-index: 25;
 }
 
-/* drink btns */
+/* === Drink buttons (slightly shorter to avoid toast overlap) === */
 .drink-btn {
   display: flex;
   border: 2px solid black;
   margin: 0.5rem 0;
-  height: 14vh;
+  height: 12vh;    /* reduced from 14vh */
   background: white;
   transition: transform 0.2s ease;
 }
@@ -70,7 +70,7 @@ h1 { margin: 0.5rem 1rem; }
   cursor: pointer;
 }
 
-/* overlay */
+/* === Overlay === */
 #overlay {
   position: fixed;
   top: 0; left: 0;
@@ -80,11 +80,11 @@ h1 { margin: 0.5rem 1rem; }
   display: none;
 }
 
-/* popup base (offset + custom) */
+/* === Popup base (offset list & custom time) === */
 .popup-menu {
   position: fixed;
   top: 10px;
-  bottom: 100px;      /* leave room at bottom */
+  bottom: 100px;        /* leave space for toast & dots */
   left: 50%;
   transform: translateX(-50%);
   width: 90vw;
@@ -92,18 +92,27 @@ h1 { margin: 0.5rem 1rem; }
   background: white;
   border: 2px solid black;
   box-sizing: border-box;
-  overflow-y: auto;
-  z-index: 40;
   display: none;
+  z-index: 40;
+  /* make its children fill its height */
+  display: flex;
+  flex-direction: column;
 }
-/* offset list */
+
+/* === Offset-list items === */
 .popup-menu ul {
   list-style: none;
   margin: 0;
   padding: 0;
+  flex: 1;              /* fill vertical space */
+  display: flex;
+  flex-direction: column;
 }
 .popup-menu li {
-  padding: 1.25rem;
+  flex: 1;              /* each item shares equal height */
+  display: flex;
+  align-items: center;
+  padding: 1rem;
   border-bottom: 1px solid black;
   cursor: pointer;
 }
@@ -114,8 +123,9 @@ h1 { margin: 0.5rem 1rem; }
   background: #eee;
 }
 
-/* custom-time grid */
+/* === Custom-time grid === */
 .popup-menu.grid3 {
+  /* switch from flex to grid */
   display: grid !important;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: repeat(12, 1fr);
@@ -131,18 +141,18 @@ h1 { margin: 0.5rem 1rem; }
   justify-content: center;
   cursor: pointer;
 }
-/* first-tap: stays selected */
+/* first tap: keep selected */
 .popup-menu.grid3 .picker-btn.selected {
   background: black;
   color: white;
 }
-/* second-tap: quick flash */
+/* second tap: quick flash */
 .popup-menu.grid3 .picker-btn.pressed {
   background: black;
   color: white;
 }
 
-/* dots & toast */
+/* === Dots & toast === */
 .screen-indicator {
   position: fixed;
   bottom: 20px;
@@ -155,6 +165,7 @@ h1 { margin: 0.5rem 1rem; }
   margin: 0 0.25rem;
   cursor: pointer;
 }
+
 #toast {
   position: fixed;
   bottom: 60px;
