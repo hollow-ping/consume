@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function closePopup(){
     popup.style.display='none';
     overlay.style.display='none';
+    overlay.classList.remove('show');
     popup.classList.remove('grid3');
     popup.innerHTML = popupHTML;
   }
@@ -90,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
           e.stopPropagation();
           lastDrink=d;
           overlay.style.display='block';
+          overlay.classList.add('show');        // <- for the CSS selector above
           popup.innerHTML = popupHTML;
           bindOffset();
           popup.style.display='flex';
@@ -174,10 +176,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const arr=JSON.parse(localStorage.getItem('drink_log')||'[]'); arr.push(lastLog);
     localStorage.setItem('drink_log',JSON.stringify(arr));
     toast.textContent=`✔️ Logged ${d.drink_name}`; toast.classList.add('show');
-    toast.onclick=()=>{
-      const a=JSON.parse(localStorage.getItem('drink_log')||'[]');
-      const i=a.findIndex(x=>x.timestamp_logged===lastLog.timestamp_logged);
-      if(i>-1){a.splice(i,1);localStorage.setItem('drink_log',JSON.stringify(a));toast.textContent='✔️ Undid';setTimeout(()=>toast.classList.remove('show'),2000);}
+    toast.onclick = () => {
+      toast.classList.add('pressed');
+        const log = JSON.parse(localStorage.getItem('drink_log')||'[]');
+        const i   = log.findIndex(x=>x.timestamp_logged===lastLog.timestamp_logged);
+        if(i>-1){
+          log.splice(i,1);
+          localStorage.setItem('drink_log',JSON.stringify(log));
+          toast.textContent = '✔️ Undid';
+        }
+        /* fade away after 1 s */
+        setTimeout(()=>{
+          toast.classList.remove('pressed');
+          toast.classList.remove('show');
+        },1000);
     };
   }
 });
