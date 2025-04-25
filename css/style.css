@@ -1,14 +1,25 @@
-/* typography & layout */
+/* === Base & layout === */
 body {
   font-family: -apple-system, BlinkMacSystemFont,
                "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  margin: 0; background: white; overflow: hidden;
+  margin: 0;
+  background: white;
+  overflow: hidden;
 }
 h1 { margin: 0.5rem 1rem; }
 
-/* screen container */
-#screens-wrapper { display: flex; height: 100vh; transition: transform 0.3s ease; }
-.screen { width: 100vw; flex-shrink: 0; box-sizing: border-box; padding-bottom: 40px; }
+/* slider */
+#screens-wrapper {
+  display: flex;
+  height: 100vh;
+  transition: transform 0.3s ease;
+}
+.screen {
+  width: 100vw;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding-bottom: 40px;
+}
 
 /* drink list */
 .drink-buttons {
@@ -18,51 +29,90 @@ h1 { margin: 0.5rem 1rem; }
   position: relative;
 }
 
-/* fixed fade hint (one row = 14vh) */
+/* fixed bottom fade: exactly one button height = 14vh */
 .bottom-fade {
   position: fixed;
-  left: 1rem; right: 1rem;
-  bottom: 60px;
+  left: 1rem;
+  right: 1rem;
+  bottom: 60px;      /* above toast */
   height: 14vh;
   background: linear-gradient(to bottom, transparent, white);
   pointer-events: none;
   z-index: 25;
 }
 
-/* drink buttons */
-.drink-btn { display: flex; border: 2px solid black; margin: 0.5rem 0; height: 14vh; background: white; }
-.drink-btn.pressed { background: #eee; }
-.drink-btn-content { width: 75%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.drink-btn-extra   { width: 25%; display: flex; align-items: center; justify-content: center; font-size: 2rem; border-left: 2px solid black; cursor: pointer; }
+/* drink btns */
+.drink-btn {
+  display: flex;
+  border: 2px solid black;
+  margin: 0.5rem 0;
+  height: 14vh;
+  background: white;
+  transition: transform 0.2s ease;
+}
+.drink-btn.pressed {
+  background: #eee;
+}
+.drink-btn-content {
+  width: 75%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.drink-btn-extra {
+  width: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  border-left: 2px solid black;
+  cursor: pointer;
+}
 
 /* overlay */
 #overlay {
-  position: fixed; top: 0; left: 0;
+  position: fixed;
+  top: 0; left: 0;
   width: 100vw; height: 100vh;
   background: rgba(255,255,255,0.5);
-  z-index: 30; display: none;
+  z-index: 30;
+  display: none;
 }
 
 /* popup base (offset + custom) */
 .popup-menu {
   position: fixed;
-  top: 10px; bottom: 100px;
-  left: 50%; transform: translateX(-50%);
-  width: 90vw; max-width: 400px;
-  background: white; border: 2px solid black;
-  box-sizing: border-box; overflow-y: auto;
-  z-index: 40; display: none;
+  top: 10px;
+  bottom: 100px;      /* leave room at bottom */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90vw;
+  max-width: 400px;
+  background: white;
+  border: 2px solid black;
+  box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 40;
+  display: none;
 }
-
-/* offset-list items */
-.popup-menu ul { list-style: none; margin: 0; padding: 0; }
+/* offset list */
+.popup-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
 .popup-menu li {
   padding: 1.25rem;
   border-bottom: 1px solid black;
   cursor: pointer;
 }
-.popup-menu li:last-child { border-bottom: none; }
-.popup-menu li.pressed { background: #eee; }
+.popup-menu li:last-child {
+  border-bottom: none;
+}
+.popup-menu li.pressed {
+  background: #eee;
+}
 
 /* custom-time grid */
 .popup-menu.grid3 {
@@ -72,35 +122,56 @@ h1 { margin: 0.5rem 1rem; }
   gap: 0;
 }
 .popup-menu.grid3 .picker-btn {
-  border: 1px solid black; margin: 0;
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
+  border: 1px solid black;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
 }
-/* first-tap: stays black */
+/* first-tap: stays selected */
 .popup-menu.grid3 .picker-btn.selected {
-  background: black; color: white;
+  background: black;
+  color: white;
 }
-/* second-tap flash */
+/* second-tap: quick flash */
 .popup-menu.grid3 .picker-btn.pressed {
-  background: black; color: white;
+  background: black;
+  color: white;
 }
 
-/* bottom dots */
+/* dots & toast */
 .screen-indicator {
-  position: fixed; bottom: 20px; left: 50%;
-  transform: translateX(-50%); font-size: 1.5rem; z-index: 35;
-}
-.screen-indicator .dot { margin: 0 0.25rem; cursor: pointer; }
-
-/* toast */
-#toast {
-  position: fixed; bottom: 60px; left: 50%;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
   transform: translateX(-50%);
-  min-width: 280px; padding: 0.75rem 1.5rem;
-  background: black; color: white; text-align: center; border-radius: 8px;
-  visibility: hidden; opacity: 0;
+  font-size: 1.5rem;
+  z-index: 35;
+}
+.screen-indicator .dot {
+  margin: 0 0.25rem;
+  cursor: pointer;
+}
+#toast {
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  padding: 0.75rem 1.5rem;
+  background: black;
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  visibility: hidden;
+  opacity: 0;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   z-index: 35;
 }
-#toast.show { visibility: visible; opacity: 1; }
+#toast.show {
+  visibility: visible;
+  opacity: 1;
+}
