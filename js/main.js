@@ -5,18 +5,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const popup   = document.getElementById('popup-menu');
   const toast   = document.getElementById('toast');
   const dots    = document.querySelectorAll('.screen-indicator .dot');
-  let   lastDrink, lastBtn, lastLog, touchStartX;
+  let   lastDrink, lastLog, touchStartX;
   const popupHTML = popup.innerHTML;
 
-  // — Swipe & dot nav —
+  // — Screen swipe & dot nav —
   function showScreen(i) {
     wrapper.style.transform = `translateX(-${i*100}%)`;
   }
   document.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
   document.addEventListener('touchend', e => {
-    if (touchStartX === null) return;
+    if (touchStartX == null) return;
     const diff = e.changedTouches[0].screenX - touchStartX;
-    const curr = Math.round(parseFloat(wrapper.style.transform.replace(/[^0-9.-]/g,''))/100) || 0;
+    const curr = Math.round(
+      parseFloat(wrapper.style.transform.replace(/[^0-9.-]/g,''))/100
+    ) || 0;
     if (Math.abs(diff) > 50) {
       if (diff > 0 && curr > 0) showScreen(curr - 1);
       else if (diff < 0 && curr < screens.length - 1) showScreen(curr + 1);
@@ -26,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   dots.forEach(d => d.addEventListener('click', () => showScreen(+d.dataset.index)));
   showScreen(0);
 
-  // — Bind offset menu items —
+  // — Bind the offset menu (“15 min ago”, etc.) —
   function bindOffset() {
     popup.querySelectorAll('li').forEach(li => {
       li.onclick = e => {
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const txt = li.textContent.trim();
         if (txt === 'Custom Time') return openCustomGrid();
         const mins = parseInt(txt, 10) || 0;
-        const dt   = new Date();
+        const dt = new Date();
         dt.setMinutes(dt.getMinutes() - mins);
         logDrink(lastDrink, dt.toISOString());
         closePopup();
@@ -44,16 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // — Fetch & render drinks (root) —
+  // — Load & render your drinks from drinks.json (same folder) —
   fetch('./drinks.json')
-    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(res => res.ok ? res.json() : Promise.reject(res.status))
     .then(list => {
       const container = document.getElementById('drink-buttons');
       list.forEach(d => {
-        const btn  = document.createElement('div');
+        const btn = document.createElement('div');
         btn.className = 'drink-btn';
 
-        // quick-log area
+        // main area: taps log now
         const main = document.createElement('div');
         main.className = 'drink-btn-content';
         main.textContent = d.name || d.drink_name;
@@ -63,13 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
           logDrink(d, new Date().toISOString());
         };
 
-        // “…” area
+        // extra “…” area
         const extra = document.createElement('div');
         extra.className = 'drink-btn-extra';
         extra.textContent = '⋯';
         extra.onclick = e => {
           e.stopPropagation();
-          lastDrink = d; lastBtn = btn;
+          lastDrink = d;
           overlay.style.display = 'block';
           popup.innerHTML = popupHTML;
           bindOffset();
@@ -84,10 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => {
       console.error('Error loading drinks.json', err);
       document.getElementById('drink-buttons').innerHTML =
-        '<p style="padding:1rem;text-align:center;">Error loading drinks</p>';
+        '<p style="padding:1rem; text-align:center;">Error loading drinks</p>';
     });
 
-  // — Close popup —
+  // — Close popup overlay —
   overlay.onclick = closePopup;
   popup.onclick   = e => e.stopPropagation();
   function closePopup() {
@@ -97,16 +99,16 @@ document.addEventListener('DOMContentLoaded', () => {
     popup.innerHTML = popupHTML;
   }
 
-  // — Custom Time Picker —
+  // — Custom Time Picker: first tap selects, second tap (hour or minute) submits —
   function openCustomGrid() {
     overlay.style.display = 'block';
     popup.classList.add('grid3');
     popup.innerHTML = '';
     popup.style.display = 'grid';
 
-    let selH = null;
+    let selH = null, selM = null;
 
-    // Hours: 0–11 (col1), 12–23 (col2)
+    // hours 0–11 in col1, 12–23 in col2
     for (let h = 0; h < 24; h++) {
       const b = document.createElement('button');
       b.className = 'picker-btn';
@@ -117,38 +119,73 @@ document.addEventListener('DOMContentLoaded', () => {
       popup.appendChild(b);
     }
 
-    // Minutes: 00,15,30,45 in col3 spanning 3 rows
-    [0, 15, 30, 45].forEach((m,i) => {
+    // minutes 00,15,30,45 in col3, each spanning 3 rows
+    [0,15,30,45].forEach((m,i) => {
       const b = document.createElement('button');
       b.className = 'picker-btn';
-      b.textContent = String(m).padStart(2, '0');
+      b.textContent = String(m).padStart(2,'0');
       b.dataset.minute = m;
       b.style.gridColumnStart = 3;
       b.style.gridRow = `${i*3+1} / span 3`;
       popup.appendChild(b);
     });
 
+    // handler for first vs second tap
     popup.querySelectorAll('.picker-btn').forEach(btn => {
       btn.onclick = e => {
         e.stopPropagation();
-        // Hour selection
-        if (btn.dataset.hour != null) {
-          // clear previous
-          popup.querySelectorAll('.picker-btn.selected').forEach(x => x.classList.remove('selected'));
-          selH = +btn.dataset.hour;
-          btn.classList.add('selected');
-          return;
-        }
-        // Minute selection & submit
-        if (btn.dataset.minute != null && selH !== null) {
+        const isHour   = btn.dataset.hour   !== undefined;
+        const isMinute = btn.dataset.minute !== undefined;
+
+        function submit() {
           btn.classList.add('pressed');
           setTimeout(() => {
             btn.classList.remove('pressed');
             const dt = new Date();
-            dt.setHours(selH, +btn.dataset.minute, 0, 0);
+            dt.setHours(selH, selM, 0, 0);
             logDrink(lastDrink, dt.toISOString());
             closePopup();
           }, 200);
+        }
+
+        // case: nothing chosen yet
+        if (selH === null && selM === null) {
+          if (isHour) {
+            selH = +btn.dataset.hour;
+            popup.querySelectorAll('[data-hour]').forEach(x=>x.classList.remove('selected'));
+            btn.classList.add('selected');
+          } else {
+            selM = +btn.dataset.minute;
+            popup.querySelectorAll('[data-minute]').forEach(x=>x.classList.remove('selected'));
+            btn.classList.add('selected');
+          }
+          return;
+        }
+
+        // case: hour chosen first
+        if (selH !== null && selM === null) {
+          if (isMinute) {
+            selM = +btn.dataset.minute;
+            return submit();
+          } else {
+            selH = +btn.dataset.hour;
+            popup.querySelectorAll('[data-hour]').forEach(x=>x.classList.remove('selected'));
+            btn.classList.add('selected');
+            return;
+          }
+        }
+
+        // case: minute chosen first
+        if (selH === null && selM !== null) {
+          if (isHour) {
+            selH = +btn.dataset.hour;
+            return submit();
+          } else {
+            selM = +btn.dataset.minute;
+            popup.querySelectorAll('[data-minute]').forEach(x=>x.classList.remove('selected'));
+            btn.classList.add('selected');
+            return;
+          }
         }
       };
     });
@@ -172,12 +209,12 @@ document.addEventListener('DOMContentLoaded', () => {
     toast.classList.add('show');
     toast.onclick = () => {
       const arr = JSON.parse(localStorage.getItem('drink_log')||'[]');
-      const idx = arr.findIndex(x => x.timestamp_logged === lastLog.timestamp_logged);
-      if (idx > -1) {
-        arr.splice(idx, 1);
+      const i   = arr.findIndex(x=>x.timestamp_logged===lastLog.timestamp_logged);
+      if (i > -1) {
+        arr.splice(i,1);
         localStorage.setItem('drink_log', JSON.stringify(arr));
         toast.textContent = '✔️ Undid';
-        setTimeout(() => toast.classList.remove('show'), 2000);
+        setTimeout(()=>toast.classList.remove('show'),2000);
       }
     };
   }
