@@ -116,10 +116,12 @@ class ConsumeApp {
     this.lastDrink = null;
     this.currentScreen = 0;
     this.activeToasts = new Set();
+    this.historyExpanded = JSON.parse(localStorage.getItem('history_expanded') || 'false');
     
     window.consumeApp = this; // Make app instance globally available
     this.initializeApp();
     this.loadDrinks();
+    this.renderHistory();
   }
 
   initializeApp() {
@@ -146,6 +148,8 @@ class ConsumeApp {
     
     // Clear toasts when switching screens
     this.clearToasts();
+    // Render history if on tab 1
+    if (index === 1) this.renderHistory();
   }
 
   async loadDrinks() {
@@ -430,6 +434,80 @@ class ConsumeApp {
         this.activeToasts.delete(toast);
       }, 300);
     });
+  }
+
+  renderHistory() {
+    const container = document.querySelector('.history-placeholder');
+    if (!container) return;
+    // Placeholder logs for now
+    const logs = this.getPlaceholderLogs();
+    // Group logs by day
+    const days = {};
+    logs.forEach(log => {
+      const day = log.timestamp.split('T')[0];
+      if (!days[day]) days[day] = [];
+      days[day].push(log);
+    });
+    const dayKeys = Object.keys(days).sort((a, b) => b.localeCompare(a));
+    const showDays = this.historyExpanded ? dayKeys.slice(0, 60) : dayKeys.slice(0, 1);
+    let html = '';
+    showDays.forEach(day => {
+      html += `<div class="history-day-divider">${day}</div>`;
+      html += `<div class="history-table">`;
+      days[day].forEach(log => {
+        const time = `[${log.timestamp.split('T')[1].slice(0,5)}]`;
+        const name = log.drink_name.length > 16 ? log.drink_name.slice(0, 15) + '…' : log.drink_name;
+        const units = Number(log.units).toFixed(1);
+        html += `<div class="history-row">
+          <div class="history-time">${time}</div>
+          <div class="history-name">${name}</div>
+          <div class="history-units">${units}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    });
+    if (!this.historyExpanded && dayKeys.length > 1) {
+      html += `<button class="history-expand-btn" title="Show more history">⋮</button>`;
+    }
+    container.innerHTML = html;
+    // Add expand button handler
+    const expandBtn = container.querySelector('.history-expand-btn');
+    if (expandBtn) {
+      expandBtn.onclick = () => {
+        this.historyExpanded = true;
+        localStorage.setItem('history_expanded', 'true');
+        this.renderHistory();
+      };
+    }
+  }
+
+  getPlaceholderLogs() {
+    // Generate 80 logs over 10 days
+    const drinks = [
+      { drink_name: 'IPA', units: 2.0 },
+      { drink_name: 'Red Wine', units: 1.5 },
+      { drink_name: 'White Wine', units: 1.5 },
+      { drink_name: 'Old Fashioned', units: 2.2 },
+      { drink_name: 'Margarita', units: 2.0 },
+      { drink_name: 'Whiskey Shot', units: 1.0 },
+      { drink_name: 'Tequila Shot', units: 1.0 },
+      { drink_name: 'Virgin Mojito', units: 0.0 },
+      { drink_name: 'Hard Seltzer', units: 1.2 }
+    ];
+    const logs = [];
+    const now = new Date();
+    for (let d = 0; d < 10; d++) {
+      for (let i = 0; i < 8; i++) {
+        const date = new Date(now.getTime() - d * 86400000 - i * 3600000);
+        const drink = drinks[(d * 8 + i) % drinks.length];
+        logs.push({
+          timestamp: date.toISOString(),
+          drink_name: drink.drink_name,
+          units: drink.units
+        });
+      }
+    }
+    return logs;
   }
 }
 
