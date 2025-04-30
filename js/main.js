@@ -313,6 +313,15 @@ class ConsumeApp {
   }
 
   showToast(message, isUndo = false) {
+    // Remove all existing toasts before showing a new one
+    this.activeToasts.forEach(toast => {
+      toast.classList.add('hide');
+      setTimeout(() => {
+        toast.remove();
+        this.activeToasts.delete(toast);
+      }, 200);
+    });
+
     const toast = document.createElement('div');
     toast.className = `toast ${isUndo ? 'undo' : ''}`;
     toast.textContent = message;
@@ -322,8 +331,7 @@ class ConsumeApp {
     this.activeToasts.add(toast);
     
     // Position the toast
-    const bottomOffset = Array.from(this.activeToasts).indexOf(toast) * 60;
-    toast.style.bottom = `${4 + bottomOffset}rem`;
+    toast.style.bottom = `4rem`;
     
     // Add show animation
     requestAnimationFrame(() => {

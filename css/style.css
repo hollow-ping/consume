@@ -129,25 +129,35 @@ body {
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%;
+  width: 100vw;
+  max-width: 100vw;
   background: var(--background-color);
   border-top: 1px solid var(--border-color);
-  padding: 1.5rem;
-  z-index: 101;
+  padding: 1.5rem 0 1.5rem 0;
+  z-index: 2001;
   display: none;
   animation: slideUp var(--transition-speed);
 }
 
 .popup-menu ul {
+  width: 100vw;
+  max-width: 100vw;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .popup-menu li {
-  padding: 1rem;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+  padding: 1rem 2rem;
   text-align: center;
   border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   transition: background-color var(--transition-speed);
+  margin: 0;
+  display: block;
 }
 
 .popup-menu li:last-child {
