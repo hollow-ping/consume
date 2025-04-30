@@ -44,10 +44,10 @@ class ErrorHandler {
   }
 
   static showUserError(message) {
-    const toast = document.getElementById('toast');
-    toast.textContent = `❌ ${message}`;
-    toast.classList.add('show', 'error');
-    setTimeout(() => toast.classList.remove('show', 'error'), 3000);
+    const app = window.consumeApp;
+    if (app) {
+      app.showToast(`❌ ${message}`, false);
+    }
   }
 }
 
@@ -112,6 +112,7 @@ class ConsumeApp {
     this.currentScreen = 0;
     this.activeToasts = new Set();
     
+    window.consumeApp = this; // Make app instance globally available
     this.initializeApp();
     this.loadDrinks();
   }
@@ -125,7 +126,6 @@ class ConsumeApp {
     this.overlay = document.getElementById('overlay');
     this.popup = document.getElementById('popup-menu');
     this.wrapper = document.getElementById('screens-wrapper');
-    this.toast = document.getElementById('toast');
     
     this.overlay.onclick = () => this.closePopup();
     this.popup.onclick = e => e.stopPropagation();
@@ -324,6 +324,12 @@ class ConsumeApp {
     // Position the toast
     const bottomOffset = Array.from(this.activeToasts).indexOf(toast) * 60;
     toast.style.bottom = `${4 + bottomOffset}rem`;
+    
+    // Add show animation
+    requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%)';
+    });
   }
 
   handleToastClick(toast) {

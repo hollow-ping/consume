@@ -60,12 +60,13 @@ body {
   align-items: stretch;
   min-height: 80px;
   overflow: hidden;
+  width: 100%;
 }
 
 .drink-btn-content {
   font-size: 1.2rem;
   font-weight: 500;
-  flex: 3;
+  width: 75%;
   padding: 1.5rem 1rem;
   display: flex;
   align-items: center;
@@ -76,7 +77,7 @@ body {
   font-size: 2rem;
   opacity: 0.5;
   transition: all var(--transition-speed);
-  flex: 1;
+  width: 25%;
   text-align: center;
   position: relative;
   border-left: 1px solid var(--border-color);
@@ -238,6 +239,9 @@ body {
   z-index: 1000;
   cursor: pointer;
   box-shadow: 0 2px 4px var(--shadow-color);
+  min-width: 200px;
+  text-align: center;
+  pointer-events: auto;
 }
 
 .toast.undo {
@@ -253,6 +257,7 @@ body {
 
 .toast.pressed {
   transform: translateX(-50%) scale(0.95);
+  background-color: #333;
 }
 
 @keyframes toastSlideUp {
