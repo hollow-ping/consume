@@ -66,11 +66,18 @@ class EventManager {
   handleClick(e) {
     const btn = e.target.closest('.drink-btn');
     if (btn) {
-      btn.classList.add('pressed');
-      setTimeout(() => btn.classList.remove('pressed'), 150);
-      const drink = JSON.parse(btn.dataset.drink);
-      this.app.logDrink(drink, new Date().toISOString());
-      return;
+      if (e.target.classList.contains('drink-btn-extra')) {
+        btn.classList.add('pressed');
+        setTimeout(() => btn.classList.remove('pressed'), 150);
+        this.app.showTimePopup(btn.dataset.drink);
+        return;
+      } else if (e.target.classList.contains('drink-btn-content') || e.target === btn) {
+        btn.classList.add('pressed');
+        setTimeout(() => btn.classList.remove('pressed'), 150);
+        const drink = JSON.parse(btn.dataset.drink);
+        this.app.logDrink(drink, new Date().toISOString());
+        return;
+      }
     }
     if (e.target.matches('.dot')) {
       this.app.showScreen(+e.target.dataset.index);
@@ -191,7 +198,7 @@ class ConsumeApp {
         <li>Custom Time</li>
       </ul>
     `;
-    this.popup.style.display = 'flex';
+    this.popup.style.display = 'block';
     this.bindTimeOptions();
   }
 
