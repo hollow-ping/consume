@@ -237,7 +237,7 @@ class ConsumeApp {
     const grid = document.createElement('div');
     grid.style.display = 'grid';
     grid.style.gridTemplateColumns = '1fr 1fr 1fr';
-    grid.style.gridTemplateRows = 'repeat(6, 1fr)';
+    grid.style.gridTemplateRows = 'repeat(12, 1fr)';
     grid.style.gap = '0.3rem';
     grid.style.justifyItems = 'stretch';
     grid.style.alignItems = 'stretch';
@@ -245,7 +245,7 @@ class ConsumeApp {
     grid.style.width = '100%';
     grid.style.height = '18rem'; // Ensures all buttons fill popup vertically
 
-    // Col 1: hours 0-5 (rows 1-6), 6-11 (rows 1-6)
+    // Col 1: hours 0-5 (rows 1-6), 6-11 (rows 7-12)
     for (let i = 0; i < 6; i++) {
       // 0-5
       const btn1 = document.createElement('button');
@@ -253,7 +253,7 @@ class ConsumeApp {
       btn1.textContent = i;
       btn1.dataset.hour = i;
       btn1.style.gridColumn = '1';
-      btn1.style.gridRow = (i + 1).toString();
+      btn1.style.gridRow = `${i * 2 + 1} / span 2`;
       btn1.onclick = () => {
         grid.querySelectorAll('.picker-btn[data-hour]').forEach(x => x.classList.remove('selected'));
         btn1.classList.add('selected');
@@ -271,7 +271,7 @@ class ConsumeApp {
       btn2.textContent = i + 6;
       btn2.dataset.hour = i + 6;
       btn2.style.gridColumn = '1';
-      btn2.style.gridRow = (i + 1).toString();
+      btn2.style.gridRow = `${i * 2 + 1} / span 2`;
       btn2.onclick = () => {
         grid.querySelectorAll('.picker-btn[data-hour]').forEach(x => x.classList.remove('selected'));
         btn2.classList.add('selected');
@@ -284,7 +284,7 @@ class ConsumeApp {
       };
       grid.appendChild(btn2);
     }
-    // Col 2: hours 12-17 (rows 1-6), 18-23 (rows 1-6)
+    // Col 2: hours 12-17 (rows 1-6), 18-23 (rows 7-12)
     for (let i = 0; i < 6; i++) {
       // 12-17
       const btn1 = document.createElement('button');
@@ -292,7 +292,7 @@ class ConsumeApp {
       btn1.textContent = i + 12;
       btn1.dataset.hour = i + 12;
       btn1.style.gridColumn = '2';
-      btn1.style.gridRow = (i + 1).toString();
+      btn1.style.gridRow = `${i * 2 + 1} / span 2`;
       btn1.onclick = () => {
         grid.querySelectorAll('.picker-btn[data-hour]').forEach(x => x.classList.remove('selected'));
         btn1.classList.add('selected');
@@ -310,7 +310,7 @@ class ConsumeApp {
       btn2.textContent = i + 18;
       btn2.dataset.hour = i + 18;
       btn2.style.gridColumn = '2';
-      btn2.style.gridRow = (i + 1).toString();
+      btn2.style.gridRow = `${i * 2 + 1} / span 2`;
       btn2.onclick = () => {
         grid.querySelectorAll('.picker-btn[data-hour]').forEach(x => x.classList.remove('selected'));
         btn2.classList.add('selected');
@@ -323,14 +323,14 @@ class ConsumeApp {
       };
       grid.appendChild(btn2);
     }
-    // Col 3: minutes (0, 15, 30, 45) in rows 1, 2, 3, 4
+    // Col 3: minutes (0, 15, 30, 45) in rows 1, 4, 7, 10, each spanning 3 rows
     [0, 15, 30, 45].forEach((minute, idx) => {
       const button = document.createElement('button');
       button.className = 'picker-btn';
       button.textContent = String(minute).padStart(2, '0');
       button.dataset.minute = minute;
       button.style.gridColumn = '3';
-      button.style.gridRow = (idx + 1).toString();
+      button.style.gridRow = `${idx * 3 + 1} / span 3`;
       button.onclick = () => {
         grid.querySelectorAll('.picker-btn[data-minute]').forEach(x => x.classList.remove('selected'));
         button.classList.add('selected');
@@ -343,14 +343,6 @@ class ConsumeApp {
       };
       grid.appendChild(button);
     });
-    // Add empty placeholders for rows 5 and 6 in col 3
-    for (let i = 5; i <= 6; i++) {
-      const placeholder = document.createElement('div');
-      placeholder.style.gridColumn = '3';
-      placeholder.style.gridRow = i.toString();
-      placeholder.style.visibility = 'hidden';
-      grid.appendChild(placeholder);
-    }
     this.popup.appendChild(grid);
   }
 
