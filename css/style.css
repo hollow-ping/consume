@@ -461,14 +461,16 @@ body {
 }
 
 .settings-row {
-  font-size: 1.35rem;
+  font-size: 2.1rem;
   font-weight: 500;
-  padding: 1.3rem 1.2rem;
-  border-bottom: 1px solid var(--border-color);
-  cursor: pointer;
+  padding: 0.7rem 1.2rem 0.5rem 1.2rem;
   background: var(--background-color);
   transition: background 0.18s;
   outline: none;
+  text-align: left;
+  border: none;
+  margin: 0;
+  letter-spacing: -0.5px;
 }
 
 .settings-row:active,
@@ -477,9 +479,5 @@ body {
 }
 
 .settings-row:first-child {
-  font-size: 1.5rem;
-  font-weight: 700;
-  background: none;
-  cursor: default;
-  border-bottom: 2px solid var(--border-color);
+  display: none;
 }
