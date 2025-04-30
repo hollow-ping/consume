@@ -338,6 +338,17 @@ class ConsumeApp {
       toast.style.opacity = '1';
       toast.style.transform = 'translateX(-50%)';
     });
+
+    // If this is an undo toast, fade it away after 2.5 seconds
+    if (isUndo) {
+      setTimeout(() => {
+        toast.classList.add('hide');
+        setTimeout(() => {
+          toast.remove();
+          this.activeToasts.delete(toast);
+        }, 300);
+      }, 2500);
+    }
   }
 
   handleToastClick(toast) {
