@@ -51,49 +51,58 @@ body {
 .drink-btn {
   background: var(--background-color);
   border-bottom: 1px solid var(--border-color);
-  padding: 1.5rem 1rem;
+  padding: 0;
   text-align: left;
   cursor: pointer;
   transition: background-color var(--transition-speed);
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: stretch;
   min-height: 80px;
-}
-
-.drink-btn:active {
-  background-color: var(--secondary-color);
-}
-
-.drink-btn.pressed {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+  overflow: hidden;
 }
 
 .drink-btn-content {
   font-size: 1.2rem;
   font-weight: 500;
-  flex: 2;
-  padding-right: 1rem;
+  flex: 3;
+  padding: 1.5rem 1rem;
+  display: flex;
+  align-items: center;
+  transition: background-color var(--transition-speed);
 }
 
 .drink-btn-extra {
   font-size: 2rem;
   opacity: 0.5;
-  transition: opacity var(--transition-speed);
-  padding: 0 1rem;
+  transition: all var(--transition-speed);
   flex: 1;
   text-align: center;
   position: relative;
   border-left: 1px solid var(--border-color);
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--background-color);
 }
 
-.drink-btn-extra:hover {
+.drink-btn-extra:active {
+  background-color: var(--secondary-color);
+  opacity: 1;
+}
+
+.drink-btn-content:active {
+  background-color: var(--secondary-color);
+}
+
+.drink-btn.pressed .drink-btn-content {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+.drink-btn.pressed .drink-btn-extra {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
   opacity: 1;
 }
 
@@ -224,20 +233,22 @@ body {
   padding: 0.8rem 1.5rem;
   border-radius: 0;
   font-size: 0.9rem;
-  opacity: 0;
+  opacity: 1;
   transition: all var(--transition-speed);
   z-index: 1000;
-  pointer-events: none;
+  cursor: pointer;
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
-.toast.show {
-  opacity: 1;
-  animation: toastSlideUp 0.3s ease-out;
+.toast.undo {
+  background: #666;
+  color: var(--secondary-color);
 }
 
 .toast.hide {
   opacity: 0;
   transform: translateX(-50%) translateY(20px);
+  pointer-events: none;
 }
 
 .toast.pressed {

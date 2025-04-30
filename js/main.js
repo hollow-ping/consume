@@ -65,13 +65,17 @@ class EventManager {
 
   handleClick(e) {
     if (e.target.matches('.drink-btn-content')) {
-      this.app.logDrink(e.target.closest('.drink-btn').dataset.drink, new Date().toISOString());
+      const btn = e.target.closest('.drink-btn');
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 150);
+      this.app.logDrink(JSON.parse(btn.dataset.drink), new Date().toISOString());
     } else if (e.target.matches('.drink-btn-extra')) {
-      this.app.showTimePopup(e.target.closest('.drink-btn').dataset.drink);
+      const btn = e.target.closest('.drink-btn');
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 150);
+      this.app.showTimePopup(btn.dataset.drink);
     } else if (e.target.matches('.dot')) {
       this.app.showScreen(+e.target.dataset.index);
-    } else if (e.target.matches('#toast')) {
-      this.app.handleToastClick();
     }
   }
 
@@ -106,6 +110,7 @@ class ConsumeApp {
     this.lastLog = null;
     this.lastDrink = null;
     this.currentScreen = 0;
+    this.activeToasts = new Set();
     
     this.initializeApp();
     this.loadDrinks();
@@ -133,6 +138,9 @@ class ConsumeApp {
       dot.setAttribute('aria-selected', i === index);
       dot.classList.toggle('active', i === index);
     });
+    
+    // Clear toasts when switching screens
+    this.clearToasts();
   }
 
   async loadDrinks() {
@@ -304,44 +312,44 @@ class ConsumeApp {
     this.overlay.classList.remove('show');
   }
 
-  showToast(message) {
-    const toast = this.toast;
-    
-    // If toast is already showing, hide it first
-    if (toast.classList.contains('show')) {
-      toast.classList.remove('show');
-      toast.classList.add('hide');
-      
-      // Wait for hide animation to complete
-      setTimeout(() => {
-        toast.classList.remove('hide');
-        this.showNewToast(message);
-      }, 300);
-    } else {
-      this.showNewToast(message);
-    }
-  }
-
-  showNewToast(message) {
-    const toast = this.toast;
+  showToast(message, isUndo = false) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${isUndo ? 'undo' : ''}`;
     toast.textContent = message;
-    toast.classList.add('show');
+    toast.onclick = () => this.handleToastClick(toast);
     
-    // Remove show class after animation completes
-    setTimeout(() => {
-      toast.classList.remove('show');
-    }, 3000);
+    document.body.appendChild(toast);
+    this.activeToasts.add(toast);
+    
+    // Position the toast
+    const bottomOffset = Array.from(this.activeToasts).indexOf(toast) * 60;
+    toast.style.bottom = `${4 + bottomOffset}rem`;
   }
 
-  handleToastClick() {
-    this.toast.classList.add('pressed');
-    if (this.lastLog && this.drinkLogger.removeLog(this.lastLog.timestamp_logged)) {
-      this.toast.textContent = '✔️ Undid';
+  handleToastClick(toast) {
+    if (this.lastLog && !toast.classList.contains('undo')) {
+      toast.classList.add('pressed');
+      if (this.drinkLogger.removeLog(this.lastLog.timestamp_logged)) {
+        this.showToast('✔️ Undid', true);
+        setTimeout(() => {
+          toast.classList.add('hide');
+          setTimeout(() => {
+            toast.remove();
+            this.activeToasts.delete(toast);
+          }, 300);
+        }, 2000);
+      }
     }
-    setTimeout(() => {
-      this.toast.classList.remove('pressed');
-      this.toast.classList.remove('show');
-    }, 1000);
+  }
+
+  clearToasts() {
+    this.activeToasts.forEach(toast => {
+      toast.classList.add('hide');
+      setTimeout(() => {
+        toast.remove();
+        this.activeToasts.delete(toast);
+      }, 300);
+    });
   }
 }
 
