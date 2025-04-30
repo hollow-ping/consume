@@ -228,80 +228,64 @@ class ConsumeApp {
     this.overlay.classList.add('show');
     this.popup.classList.add('grid3');
     this.popup.innerHTML = '';
-    this.popup.style.display = 'grid';
+    this.popup.style.display = 'block';
     
     let selectedHour = null;
     let selectedMinute = null;
 
     // Render hours
+    const hourContainer = document.createElement('div');
+    hourContainer.style.display = 'flex';
+    hourContainer.style.flexWrap = 'wrap';
+    hourContainer.style.justifyContent = 'center';
+    hourContainer.style.marginBottom = '1rem';
     for (let hour = 0; hour < 24; hour++) {
       const button = document.createElement('button');
       button.className = 'picker-btn';
       button.textContent = hour;
       button.dataset.hour = hour;
-      button.style.gridColumnStart = hour < 12 ? 1 : 2;
-      button.style.gridRowStart = (hour % 12) + 1;
-      this.popup.appendChild(button);
+      button.style.margin = '0.2rem';
+      button.onclick = () => {
+        // Deselect all hour buttons
+        hourContainer.querySelectorAll('.picker-btn').forEach(x => x.classList.remove('selected'));
+        button.classList.add('selected');
+        if (selectedMinute !== null) {
+          // If minute already picked, submit
+          this.submitCustomTime(hour, selectedMinute);
+          this.closePopup();
+        } else {
+          selectedHour = hour;
+        }
+      };
+      hourContainer.appendChild(button);
     }
+    this.popup.appendChild(hourContainer);
 
     // Render minutes
-    [0, 15, 30, 45].forEach((minute, index) => {
+    const minuteContainer = document.createElement('div');
+    minuteContainer.style.display = 'flex';
+    minuteContainer.style.justifyContent = 'center';
+    [0, 15, 30, 45].forEach((minute) => {
       const button = document.createElement('button');
       button.className = 'picker-btn';
       button.textContent = String(minute).padStart(2, '0');
       button.dataset.minute = minute;
-      button.style.gridColumnStart = 3;
-      button.style.gridRow = `${index * 3 + 1}/span 3`;
-      this.popup.appendChild(button);
-    });
-
-    this.bindTimePickerButtons(selectedHour, selectedMinute);
-  }
-
-  bindTimePickerButtons(selectedHour, selectedMinute) {
-    this.popup.querySelectorAll('.picker-btn').forEach(btn => {
-      btn.onclick = e => {
-        e.stopPropagation();
-        const isHour = 'hour' in btn.dataset;
-        const isMinute = 'minute' in btn.dataset;
-
-        if (!selectedHour && !selectedMinute) {
-          if (isHour) {
-            selectedHour = +btn.dataset.hour;
-            this.popup.querySelectorAll('[data-hour]').forEach(x => x.classList.remove('selected'));
-            btn.classList.add('selected');
-          } else {
-            selectedMinute = +btn.dataset.minute;
-            this.popup.querySelectorAll('[data-minute]').forEach(x => x.classList.remove('selected'));
-            btn.classList.add('selected');
-          }
-          return;
-        }
-
-        if (selectedHour && !selectedMinute) {
-          if (isMinute) {
-            selectedMinute = +btn.dataset.minute;
-            this.submitCustomTime(selectedHour, selectedMinute);
-          } else {
-            selectedHour = +btn.dataset.hour;
-            this.popup.querySelectorAll('[data-hour]').forEach(x => x.classList.remove('selected'));
-            btn.classList.add('selected');
-          }
-          return;
-        }
-
-        if (!selectedHour && selectedMinute) {
-          if (isHour) {
-            selectedHour = +btn.dataset.hour;
-            this.submitCustomTime(selectedHour, selectedMinute);
-          } else {
-            selectedMinute = +btn.dataset.minute;
-            this.popup.querySelectorAll('[data-minute]').forEach(x => x.classList.remove('selected'));
-            btn.classList.add('selected');
-          }
+      button.style.margin = '0.2rem';
+      button.onclick = () => {
+        // Deselect all minute buttons
+        minuteContainer.querySelectorAll('.picker-btn').forEach(x => x.classList.remove('selected'));
+        button.classList.add('selected');
+        if (selectedHour !== null) {
+          // If hour already picked, submit
+          this.submitCustomTime(selectedHour, minute);
+          this.closePopup();
+        } else {
+          selectedMinute = minute;
         }
       };
+      minuteContainer.appendChild(button);
     });
+    this.popup.appendChild(minuteContainer);
   }
 
   submitCustomTime(hour, minute) {
