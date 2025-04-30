@@ -233,59 +233,78 @@ class ConsumeApp {
     let selectedHour = null;
     let selectedMinute = null;
 
-    // Render hours
-    const hourContainer = document.createElement('div');
-    hourContainer.style.display = 'flex';
-    hourContainer.style.flexWrap = 'wrap';
-    hourContainer.style.justifyContent = 'center';
-    hourContainer.style.marginBottom = '1rem';
-    for (let hour = 0; hour < 24; hour++) {
+    // Create grid container
+    const grid = document.createElement('div');
+    grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = '1fr 1fr 1fr';
+    grid.style.gap = '0.3rem';
+    grid.style.justifyItems = 'center';
+    grid.style.alignItems = 'center';
+    grid.style.margin = '1rem 0';
+    grid.style.width = '100%';
+
+    // Render hours 0-11 in col 1
+    for (let i = 0; i < 12; i++) {
       const button = document.createElement('button');
       button.className = 'picker-btn';
-      button.textContent = hour;
-      button.dataset.hour = hour;
-      button.style.margin = '0.2rem';
+      button.textContent = i;
+      button.dataset.hour = i;
+      button.style.gridColumn = '1';
+      button.style.gridRow = (i + 1).toString();
       button.onclick = () => {
-        // Deselect all hour buttons
-        hourContainer.querySelectorAll('.picker-btn').forEach(x => x.classList.remove('selected'));
+        grid.querySelectorAll('.picker-btn[data-hour]').forEach(x => x.classList.remove('selected'));
         button.classList.add('selected');
         if (selectedMinute !== null) {
-          // If minute already picked, submit
-          this.submitCustomTime(hour, selectedMinute);
+          this.submitCustomTime(i, selectedMinute);
           this.closePopup();
         } else {
-          selectedHour = hour;
+          selectedHour = i;
         }
       };
-      hourContainer.appendChild(button);
+      grid.appendChild(button);
     }
-    this.popup.appendChild(hourContainer);
-
-    // Render minutes
-    const minuteContainer = document.createElement('div');
-    minuteContainer.style.display = 'flex';
-    minuteContainer.style.justifyContent = 'center';
-    [0, 15, 30, 45].forEach((minute) => {
+    // Render hours 12-23 in col 2
+    for (let i = 12; i < 24; i++) {
+      const button = document.createElement('button');
+      button.className = 'picker-btn';
+      button.textContent = i;
+      button.dataset.hour = i;
+      button.style.gridColumn = '2';
+      button.style.gridRow = (i - 11).toString();
+      button.onclick = () => {
+        grid.querySelectorAll('.picker-btn[data-hour]').forEach(x => x.classList.remove('selected'));
+        button.classList.add('selected');
+        if (selectedMinute !== null) {
+          this.submitCustomTime(i, selectedMinute);
+          this.closePopup();
+        } else {
+          selectedHour = i;
+        }
+      };
+      grid.appendChild(button);
+    }
+    // Render minutes in col 3, each spanning 6 rows
+    [0, 15, 30, 45].forEach((minute, idx) => {
       const button = document.createElement('button');
       button.className = 'picker-btn';
       button.textContent = String(minute).padStart(2, '0');
       button.dataset.minute = minute;
-      button.style.margin = '0.2rem';
+      button.style.gridColumn = '3';
+      button.style.gridRow = `${idx * 6 + 1} / span 6`;
+      button.style.width = '100%';
       button.onclick = () => {
-        // Deselect all minute buttons
-        minuteContainer.querySelectorAll('.picker-btn').forEach(x => x.classList.remove('selected'));
+        grid.querySelectorAll('.picker-btn[data-minute]').forEach(x => x.classList.remove('selected'));
         button.classList.add('selected');
         if (selectedHour !== null) {
-          // If hour already picked, submit
           this.submitCustomTime(selectedHour, minute);
           this.closePopup();
         } else {
           selectedMinute = minute;
         }
       };
-      minuteContainer.appendChild(button);
+      grid.appendChild(button);
     });
-    this.popup.appendChild(minuteContainer);
+    this.popup.appendChild(grid);
   }
 
   submitCustomTime(hour, minute) {
