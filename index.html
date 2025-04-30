@@ -1,48 +1,52 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <meta name="description" content="Track your drink consumption with Consume App"/>
   <title>Consume App</title>
   <link rel="stylesheet" href="css/style.css"/>
   <script defer src="js/main.js"></script>
 </head>
 <body>
-  <div id="screens-wrapper">
-    <div class="screen" id="screen-main">
-      <div id="drink-buttons" class="drink-buttons"></div>
-    </div>
-    <div class="screen" id="screen-two">
-      <div class="history-placeholder">– placeholder –</div>
-    </div>
-    <div class="screen" id="screen-three">
-      <div class="settings-placeholder">– placeholder –</div>
-    </div>
-  </div>
+  <main id="screens-wrapper">
+    <section class="screen" id="screen-main" aria-label="Main screen">
+      <div id="drink-buttons" class="drink-buttons" role="grid"></div>
+    </section>
+    
+    <section class="screen" id="screen-two" aria-label="History screen">
+      <div class="history-placeholder" role="status">History</div>
+    </section>
+    
+    <section class="screen" id="screen-three" aria-label="Settings screen">
+      <div class="settings-placeholder" role="status">Settings</div>
+    </section>
+  </main>
 
-  <!-- overlay & popups -->
-  <div id="overlay"></div>
-  <div id="popup-menu" class="popup-menu">
-    <ul>
-      <li>15 min ago</li>
-      <li>30 min ago</li>
-      <li>45 min ago</li>
-      <li>60 min ago</li>
-      <li>Custom Time</li>
+  <!-- Overlay & Popups -->
+  <div id="overlay" role="presentation"></div>
+  <div id="popup-menu" class="popup-menu" role="dialog" aria-modal="true">
+    <ul role="menu">
+      <li role="menuitem">15 min ago</li>
+      <li role="menuitem">30 min ago</li>
+      <li role="menuitem">45 min ago</li>
+      <li role="menuitem">60 min ago</li>
+      <li role="menuitem">Custom Time</li>
     </ul>
   </div>
 
-  <!-- UI elements -->
-  <div class="screen-indicator">
-    <span class="dot" data-index="0">●</span>
-    <span class="dot" data-index="1">●</span>
-    <span class="dot" data-index="2">●</span>
-  </div>
-  <div id="toast" class="toast"></div>
+  <!-- UI Elements -->
+  <nav class="screen-indicator" role="tablist" aria-label="Screen navigation">
+    <button class="dot" data-index="0" role="tab" aria-selected="true" aria-label="Main screen">●</button>
+    <button class="dot" data-index="1" role="tab" aria-selected="false" aria-label="History screen">●</button>
+    <button class="dot" data-index="2" role="tab" aria-selected="false" aria-label="Settings screen">●</button>
+  </nav>
+  
+  <div id="toast" class="toast" role="alert" aria-live="polite"></div>
 
-  <!-- fixed bottom fade -->
-  <div class="bottom-fade"></div>
+  <!-- Fixed bottom fade -->
+  <div class="bottom-fade" role="presentation"></div>
 </body>
 </html>
