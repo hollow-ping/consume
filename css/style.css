@@ -74,14 +74,23 @@ body {
 .drink-btn-content {
   font-size: 1.2rem;
   font-weight: 500;
-  flex: 1;
+  flex: 2;
+  padding-right: 1rem;
 }
 
 .drink-btn-extra {
-  font-size: 1.5rem;
+  font-size: 2rem;
   opacity: 0.5;
   transition: opacity var(--transition-speed);
   padding: 0 1rem;
+  flex: 1;
+  text-align: center;
+  position: relative;
+  border-left: 1px solid var(--border-color);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .drink-btn-extra:hover {
@@ -181,6 +190,7 @@ body {
   display: flex;
   gap: 0.5rem;
   z-index: 10;
+  background: transparent;
 }
 
 .dot {
@@ -192,14 +202,16 @@ body {
   font-size: 1.2rem;
   transition: opacity var(--transition-speed);
   padding: 0.5rem;
+  outline: none;
 }
 
-.dot.active {
-  opacity: 1;
-}
-
+.dot.active,
 .dot[aria-selected="true"] {
   opacity: 1;
+}
+
+.dot:focus {
+  outline: none;
 }
 
 .toast {
@@ -213,17 +225,34 @@ body {
   border-radius: 0;
   font-size: 0.9rem;
   opacity: 0;
-  transition: opacity var(--transition-speed);
+  transition: all var(--transition-speed);
   z-index: 1000;
+  pointer-events: none;
 }
 
 .toast.show {
   opacity: 1;
-  animation: fadeIn var(--transition-speed);
+  animation: toastSlideUp 0.3s ease-out;
+}
+
+.toast.hide {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
 }
 
 .toast.pressed {
   transform: translateX(-50%) scale(0.95);
+}
+
+@keyframes toastSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .toast.error {

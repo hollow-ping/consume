@@ -59,8 +59,8 @@ class EventManager {
 
   setupDelegatedEvents() {
     document.addEventListener('click', this.handleClick.bind(this));
-    document.addEventListener('touchstart', this.handleTouchStart.bind(this));
-    document.addEventListener('touchend', this.handleTouchEnd.bind(this));
+    document.addEventListener('touchstart', this.handleTouchStart.bind(this), { passive: true });
+    document.addEventListener('touchend', this.handleTouchEnd.bind(this), { passive: true });
   }
 
   handleClick(e) {
@@ -81,16 +81,19 @@ class EventManager {
 
   handleTouchEnd(e) {
     if (this.app.touchStartX === null) return;
-    const diff = e.changedTouches[0].screenX - this.app.touchStartX;
-    const currentScreen = Math.round(parseFloat(document.getElementById('screens-wrapper').style.transform.replace(/[^0-9.-]/g, '')) / 100) || 0;
     
-    if (Math.abs(diff) > 50) {
-      if (diff > 0 && currentScreen > 0) {
-        this.app.showScreen(currentScreen - 1);
-      } else if (diff < 0 && currentScreen < 2) {
-        this.app.showScreen(currentScreen + 1);
+    const touchEndX = e.changedTouches[0].screenX;
+    const diff = touchEndX - this.app.touchStartX;
+    const minSwipeDistance = 50;
+    
+    if (Math.abs(diff) > minSwipeDistance) {
+      if (diff > 0 && this.app.currentScreen > 0) {
+        this.app.showScreen(this.app.currentScreen - 1);
+      } else if (diff < 0 && this.app.currentScreen < 2) {
+        this.app.showScreen(this.app.currentScreen + 1);
       }
     }
+    
     this.app.touchStartX = null;
   }
 }
@@ -102,6 +105,7 @@ class ConsumeApp {
     this.touchStartX = null;
     this.lastLog = null;
     this.lastDrink = null;
+    this.currentScreen = 0;
     
     this.initializeApp();
     this.loadDrinks();
@@ -123,8 +127,10 @@ class ConsumeApp {
   }
 
   showScreen(index) {
+    this.currentScreen = index;
     this.wrapper.style.transform = `translateX(-${index * 100}%)`;
     document.querySelectorAll('.screen-indicator .dot').forEach((dot, i) => {
+      dot.setAttribute('aria-selected', i === index);
       dot.classList.toggle('active', i === index);
     });
   }
@@ -299,8 +305,32 @@ class ConsumeApp {
   }
 
   showToast(message) {
-    this.toast.textContent = message;
-    this.toast.classList.add('show');
+    const toast = this.toast;
+    
+    // If toast is already showing, hide it first
+    if (toast.classList.contains('show')) {
+      toast.classList.remove('show');
+      toast.classList.add('hide');
+      
+      // Wait for hide animation to complete
+      setTimeout(() => {
+        toast.classList.remove('hide');
+        this.showNewToast(message);
+      }, 300);
+    } else {
+      this.showNewToast(message);
+    }
+  }
+
+  showNewToast(message) {
+    const toast = this.toast;
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    // Remove show class after animation completes
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
   }
 
   handleToastClick() {
