@@ -335,8 +335,16 @@ class ConsumeApp {
   handleToastClick(toast) {
     if (this.lastLog && !toast.classList.contains('undo')) {
       toast.classList.add('pressed');
+      setTimeout(() => {
+        toast.classList.remove('pressed');
+        toast.classList.add('released');
+        setTimeout(() => {
+          toast.classList.remove('released');
+        }, 150);
+      }, 100);
+      const drinkName = this.lastLog.drink_name;
       if (this.drinkLogger.removeLog(this.lastLog.timestamp_logged)) {
-        this.showToast('✔️ Undid', true);
+        this.showToast(`Undid ${drinkName}`, true);
         setTimeout(() => {
           toast.classList.add('hide');
           setTimeout(() => {

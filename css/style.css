@@ -47,23 +47,28 @@ body {
   padding: 1.5rem;
   margin-bottom: var(--fade-height);
   gap: 1.5rem;
+  background: var(--background-color);
 }
 
 .drink-btn {
   background: var(--background-color);
-  border: 2px solid var(--border-color);
-  padding: 0;
+  border: 1px solid var(--border-color);
+  margin: 0 0 1.5rem 0;
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(.4,2,.6,1);
   position: relative;
   display: flex;
   align-items: stretch;
-  min-height: 90px;
+  min-height: 81px;
   overflow: hidden;
   width: 100%;
-  box-shadow: 0 4px 8px var(--shadow-color);
-  border-radius: 4px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border-radius: 8px;
+}
+
+.drink-btn:last-child {
+  margin-bottom: 0;
 }
 
 .drink-btn-content {
@@ -73,42 +78,31 @@ body {
   padding: 1.5rem 1.5rem;
   display: flex;
   align-items: center;
-  transition: all 0.2s ease;
+  transition: color 0.2s, background 0.2s;
+  border: none;
+  background: transparent;
 }
 
 .drink-btn-extra {
   font-size: 2rem;
   opacity: 0.5;
-  transition: all 0.2s ease;
+  transition: color 0.2s, background 0.2s;
   width: 25%;
   text-align: center;
   position: relative;
-  border-left: 2px solid var(--border-color);
+  /* border-left: 2px solid var(--border-color); */
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--background-color);
-}
-
-.drink-btn-extra:active {
-  background-color: var(--secondary-color);
-  opacity: 1;
-}
-
-.drink-btn-content:active {
-  background-color: var(--secondary-color);
+  background: transparent;
 }
 
 .drink-btn.pressed {
-  transform: scale(0.95);
-  box-shadow: 0 2px 4px var(--shadow-color);
+  transform: scale(0.96);
+  box-shadow: 0 2px 6px var(--shadow-color);
 }
 
-.drink-btn.pressed .drink-btn-content {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
-}
-
+.drink-btn.pressed .drink-btn-content,
 .drink-btn.pressed .drink-btn-extra {
   background-color: var(--primary-color);
   color: var(--secondary-color);
@@ -229,7 +223,8 @@ body {
 }
 
 .dot:focus {
-  outline: none;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .toast {
@@ -264,8 +259,14 @@ body {
 }
 
 .toast.pressed {
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) scale(0.92);
   background-color: #333;
+  transition: transform 0.1s cubic-bezier(.4,2,.6,1);
+}
+
+.toast.released {
+  transform: translateX(-50%) scale(1);
+  transition: transform 0.15s cubic-bezier(.4,2,.6,1);
 }
 
 @keyframes toastSlideUp {
