@@ -343,6 +343,14 @@ class ConsumeApp {
       };
       grid.appendChild(button);
     });
+    // Add empty placeholders for rows 5 and 6 in col 3
+    for (let i = 5; i <= 6; i++) {
+      const placeholder = document.createElement('div');
+      placeholder.style.gridColumn = '3';
+      placeholder.style.gridRow = i.toString();
+      placeholder.style.visibility = 'hidden';
+      grid.appendChild(placeholder);
+    }
     this.popup.appendChild(grid);
   }
 
