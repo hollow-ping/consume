@@ -90,19 +90,20 @@ class EventManager {
 
   handleTouchEnd(e) {
     if (this.app.touchStartX === null) return;
-    
     const touchEndX = e.changedTouches[0].screenX;
     const diff = touchEndX - this.app.touchStartX;
     const minSwipeDistance = 50;
-    
     if (Math.abs(diff) > minSwipeDistance) {
       if (diff > 0 && this.app.currentScreen > 0) {
-        this.app.showScreen(this.app.currentScreen - 1);
+        if (this.app.currentScreen === 3) {
+          this.app.showScreen(2);
+        } else {
+          this.app.showScreen(this.app.currentScreen - 1);
+        }
       } else if (diff < 0 && this.app.currentScreen < 2) {
         this.app.showScreen(this.app.currentScreen + 1);
       }
     }
-    
     this.app.touchStartX = null;
   }
 }
@@ -139,19 +140,19 @@ class ConsumeApp {
   }
 
   showScreen(index) {
+    if (index < 0) index = 0;
+    if (index > 3) index = 3;
     this.currentScreen = index;
     this.wrapper.style.transform = `translateX(-${index * 100}vw)`;
     document.querySelectorAll('.screen-indicator .dot').forEach((dot, i) => {
       dot.setAttribute('aria-selected', i === index);
       dot.classList.toggle('active', i === index);
     });
-    
-    // Clear toasts when switching screens
+    document.querySelector('.screen-indicator').style.display = (index === 3) ? 'none' : '';
     this.clearToasts();
-    // Render history if on tab 1
     if (index === 1) this.renderHistory();
-    // Render settings if on tab 2
     if (index === 2) this.renderSettings();
+    if (index === 3) this.renderSuperLog();
   }
 
   async loadDrinks() {
@@ -526,7 +527,6 @@ class ConsumeApp {
     const container = document.querySelector('.settings-placeholder');
     if (!container) return;
     const settings = [
-      'Settings',
       'Save CSV',
       'Share CSV',
       'Export Data',
@@ -534,14 +534,34 @@ class ConsumeApp {
       'Reset All Data',
       'About',
       'Help',
-      'Contact Support'
+      'Contact Support',
+      'Super Log'
     ];
     let html = '';
     settings.forEach((item, idx) => {
-      html += `<div class="settings-row" tabindex="0">${item}</div>`;
+      html += `<div class="settings-row" tabindex="0" data-setting="${item}">${item}</div>`;
     });
     container.innerHTML = html;
-    // Optionally, add click handlers for future settings actions
+    // Add click handler for Super Log
+    container.querySelectorAll('.settings-row').forEach(row => {
+      if (row.textContent === 'Super Log') {
+        row.onclick = () => this.showScreen(3);
+      }
+    });
+  }
+
+  renderSuperLog() {
+    const container = document.querySelector('.superlog-placeholder');
+    if (!container) return;
+    let html = '';
+    html += `<div class="superlog-back" tabindex="0">&#8592;</div>`;
+    html += `<div class="superlog-title">Super Log</div>`;
+    html += `<button class="superlog-btn">Add Side Effect</button>`;
+    html += `<button class="superlog-btn">Add Note</button>`;
+    html += `<button class="superlog-btn">Add Custom Event</button>`;
+    container.innerHTML = html;
+    // Back arrow handler
+    container.querySelector('.superlog-back').onclick = () => this.showScreen(2);
   }
 }
 
