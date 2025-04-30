@@ -403,6 +403,7 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0 0.5rem;
+  text-align: left;
 }
 
 .history-units {
@@ -441,4 +442,44 @@ body {
 
 .history-expand-btn:active {
   background: #eee;
+}
+
+.history-row.history-total-row {
+  font-weight: 600;
+  background: #f3f3f3;
+  border-bottom: none;
+}
+
+.history-total-label {
+  color: #222;
+  text-align: left;
+}
+
+.history-total-units {
+  color: #222;
+  text-align: right;
+}
+
+.settings-row {
+  font-size: 1.35rem;
+  font-weight: 500;
+  padding: 1.3rem 1.2rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  background: var(--background-color);
+  transition: background 0.18s;
+  outline: none;
+}
+
+.settings-row:active,
+.settings-row:focus {
+  background: #eee;
+}
+
+.settings-row:first-child {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: none;
+  cursor: default;
+  border-bottom: 2px solid var(--border-color);
 }

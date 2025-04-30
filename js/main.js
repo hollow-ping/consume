@@ -150,6 +150,8 @@ class ConsumeApp {
     this.clearToasts();
     // Render history if on tab 1
     if (index === 1) this.renderHistory();
+    // Render settings if on tab 2
+    if (index === 2) this.renderSettings();
   }
 
   async loadDrinks() {
@@ -452,18 +454,28 @@ class ConsumeApp {
     const showDays = this.historyExpanded ? dayKeys.slice(0, 60) : dayKeys.slice(0, 1);
     let html = '';
     showDays.forEach(day => {
+      const logsForDay = days[day];
       html += `<div class="history-day-divider">${day}</div>`;
       html += `<div class="history-table">`;
-      days[day].forEach(log => {
+      let total = 0;
+      logsForDay.forEach(log => {
         const time = `[${log.timestamp.split('T')[1].slice(0,5)}]`;
         const name = log.drink_name.length > 16 ? log.drink_name.slice(0, 15) + '…' : log.drink_name;
         const units = Number(log.units).toFixed(1);
+        total += Number(log.units);
         html += `<div class="history-row">
           <div class="history-time">${time}</div>
           <div class="history-name">${name}</div>
           <div class="history-units">${units}</div>
         </div>`;
       });
+      if (logsForDay.length > 1) {
+        html += `<div class="history-row history-total-row">
+          <div class="history-time"></div>
+          <div class="history-name history-total-label">Total</div>
+          <div class="history-units history-total-units">${total.toFixed(1)}</div>
+        </div>`;
+      }
       html += `</div>`;
     });
     if (!this.historyExpanded && dayKeys.length > 1) {
@@ -508,6 +520,28 @@ class ConsumeApp {
       }
     }
     return logs;
+  }
+
+  renderSettings() {
+    const container = document.querySelector('.settings-placeholder');
+    if (!container) return;
+    const settings = [
+      'Settings',
+      'Save CSV',
+      'Share CSV',
+      'Export Data',
+      'Import Data',
+      'Reset All Data',
+      'About',
+      'Help',
+      'Contact Support'
+    ];
+    let html = '';
+    settings.forEach((item, idx) => {
+      html += `<div class="settings-row" tabindex="0">${item}</div>`;
+    });
+    container.innerHTML = html;
+    // Optionally, add click handlers for future settings actions
   }
 }
 
