@@ -237,9 +237,10 @@ class ConsumeApp {
     const grid = document.createElement('div');
     grid.style.display = 'grid';
     grid.style.gridTemplateColumns = '1fr 1fr 1fr';
+    grid.style.gridTemplateRows = 'repeat(12, 1fr)';
     grid.style.gap = '0.3rem';
-    grid.style.justifyItems = 'center';
-    grid.style.alignItems = 'center';
+    grid.style.justifyItems = 'stretch';
+    grid.style.alignItems = 'stretch';
     grid.style.margin = '1rem 0';
     grid.style.width = '100%';
 
@@ -291,7 +292,7 @@ class ConsumeApp {
       button.dataset.minute = minute;
       button.style.gridColumn = '3';
       button.style.gridRow = `${idx * 6 + 1} / span 6`;
-      button.style.width = '100%';
+      button.style.height = '100%';
       button.onclick = () => {
         grid.querySelectorAll('.picker-btn[data-minute]').forEach(x => x.classList.remove('selected'));
         button.classList.add('selected');
