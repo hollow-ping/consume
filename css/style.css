@@ -1,11 +1,12 @@
 :root {
-  --primary-color: #4a90e2;
-  --secondary-color: #f5f5f5;
-  --text-color: #333;
-  --error-color: #e74c3c;
-  --success-color: #2ecc71;
+  --primary-color: #000;
+  --secondary-color: #fff;
+  --text-color: #000;
+  --background-color: #fff;
+  --border-color: #000;
   --shadow-color: rgba(0, 0, 0, 0.1);
   --transition-speed: 0.3s;
+  --fade-height: 100px;
 }
 
 * {
@@ -18,7 +19,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   color: var(--text-color);
-  background-color: #fff;
+  background-color: var(--background-color);
   overflow: hidden;
   height: 100vh;
   width: 100vw;
@@ -34,51 +35,53 @@ body {
 .screen {
   width: 100vw;
   height: 100%;
-  padding: 1rem;
+  padding: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  position: relative;
 }
 
 .drink-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin-bottom: var(--fade-height);
 }
 
 .drink-btn {
-  background: var(--secondary-color);
-  border-radius: 12px;
-  padding: 1rem;
-  text-align: center;
+  background: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.5rem 1rem;
+  text-align: left;
   cursor: pointer;
-  transition: transform var(--transition-speed), background-color var(--transition-speed);
+  transition: background-color var(--transition-speed);
   position: relative;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 80px;
 }
 
 .drink-btn:active {
-  transform: scale(0.95);
+  background-color: var(--secondary-color);
 }
 
 .drink-btn.pressed {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--secondary-color);
 }
 
 .drink-btn-content {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  margin-bottom: 0.5rem;
+  flex: 1;
 }
 
 .drink-btn-extra {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   opacity: 0.5;
   transition: opacity var(--transition-speed);
+  padding: 0 1rem;
 }
 
 .drink-btn-extra:hover {
@@ -106,8 +109,8 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  background: white;
-  border-radius: 20px 20px 0 0;
+  background: var(--background-color);
+  border-top: 1px solid var(--border-color);
   padding: 1.5rem;
   z-index: 101;
   display: none;
@@ -121,10 +124,13 @@ body {
 .popup-menu li {
   padding: 1rem;
   text-align: center;
-  border-radius: 8px;
-  margin: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   transition: background-color var(--transition-speed);
+}
+
+.popup-menu li:last-child {
+  border-bottom: none;
 }
 
 .popup-menu li:hover {
@@ -133,7 +139,7 @@ body {
 
 .popup-menu li.pressed {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--secondary-color);
 }
 
 .popup-menu.grid3 {
@@ -144,9 +150,9 @@ body {
 }
 
 .picker-btn {
-  background: var(--secondary-color);
-  border: none;
-  border-radius: 8px;
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0;
   padding: 0.5rem;
   font-size: 1rem;
   cursor: pointer;
@@ -154,16 +160,17 @@ body {
 }
 
 .picker-btn:hover {
-  background-color: #e0e0e0;
+  background-color: var(--secondary-color);
 }
 
 .picker-btn.selected {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--secondary-color);
 }
 
 .picker-btn.pressed {
-  transform: scale(0.95);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .screen-indicator {
@@ -201,9 +208,9 @@ body {
   left: 50%;
   transform: translateX(-50%);
   background: var(--primary-color);
-  color: white;
+  color: var(--secondary-color);
   padding: 0.8rem 1.5rem;
-  border-radius: 25px;
+  border-radius: 0;
   font-size: 0.9rem;
   opacity: 0;
   transition: opacity var(--transition-speed);
@@ -220,7 +227,7 @@ body {
 }
 
 .toast.error {
-  background-color: var(--error-color);
+  background-color: var(--primary-color);
 }
 
 .bottom-fade {
@@ -228,9 +235,10 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 4rem;
-  background: linear-gradient(transparent, white);
+  height: var(--fade-height);
+  background: linear-gradient(transparent, var(--background-color));
   pointer-events: none;
+  z-index: 5;
 }
 
 @keyframes fadeIn {
@@ -248,7 +256,7 @@ body {
 .settings-placeholder {
   padding: 2rem;
   text-align: center;
-  color: #666;
+  color: var(--text-color);
   font-size: 1.2rem;
 }
 
@@ -268,17 +276,12 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
-  .drink-buttons {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 0.8rem;
-    padding: 0.8rem;
-  }
-  
   .drink-btn {
-    padding: 0.8rem;
+    padding: 1.2rem 1rem;
+    min-height: 70px;
   }
   
   .drink-btn-content {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 }
