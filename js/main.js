@@ -140,7 +140,7 @@ class ConsumeApp {
 
   showScreen(index) {
     this.currentScreen = index;
-    this.wrapper.style.transform = `translateX(-${index * 100}%)`;
+    this.wrapper.style.transform = `translateX(-${index * 100}vw)`;
     document.querySelectorAll('.screen-indicator .dot').forEach((dot, i) => {
       dot.setAttribute('aria-selected', i === index);
       dot.classList.toggle('active', i === index);
