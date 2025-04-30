@@ -46,14 +46,14 @@ body {
   flex-direction: column;
   padding: 1.5rem;
   margin-bottom: var(--fade-height);
-  gap: 1.5rem;
+  gap: 0.5rem;
   background: var(--background-color);
 }
 
 .drink-btn {
   background: var(--background-color);
   border: 1px solid var(--border-color);
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 0.5rem 0;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(.4,2,.6,1);
@@ -71,6 +71,12 @@ body {
   margin-bottom: 0;
 }
 
+.drink-btn-content,
+.drink-btn-extra {
+  background: transparent !important;
+  transition: color 0.2s, background 0.2s;
+}
+
 .drink-btn-content {
   font-size: 1.2rem;
   font-weight: 500;
@@ -78,23 +84,17 @@ body {
   padding: 1.5rem 1.5rem;
   display: flex;
   align-items: center;
-  transition: color 0.2s, background 0.2s;
   border: none;
-  background: transparent;
 }
 
 .drink-btn-extra {
   font-size: 2rem;
   opacity: 0.5;
-  transition: color 0.2s, background 0.2s;
   width: 25%;
   text-align: center;
-  position: relative;
-  /* border-left: 2px solid var(--border-color); */
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
 }
 
 .drink-btn.pressed {
@@ -241,13 +241,13 @@ body {
   position: fixed;
   bottom: 4rem;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(0.7);
+  opacity: 0;
   background: var(--primary-color);
   color: var(--secondary-color);
   padding: 0.8rem 1.5rem;
   border-radius: 0;
   font-size: 0.9rem;
-  opacity: 1;
   transition: all var(--transition-speed);
   z-index: 1000;
   cursor: pointer;
@@ -255,6 +255,7 @@ body {
   min-width: 200px;
   text-align: center;
   pointer-events: auto;
+  animation: toastFlyIn 0.35s cubic-bezier(.4,2,.6,1) forwards;
 }
 
 .toast.undo {
@@ -264,8 +265,9 @@ body {
 
 .toast.hide {
   opacity: 0;
-  transform: translateX(-50%) translateY(20px);
+  transform: translateX(-50%) scale(0.7);
   pointer-events: none;
+  animation: toastFlyOut 0.25s cubic-bezier(.4,2,.6,1) forwards;
 }
 
 .toast.pressed {
@@ -279,14 +281,25 @@ body {
   transition: transform 0.15s cubic-bezier(.4,2,.6,1);
 }
 
-@keyframes toastSlideUp {
-  0% {
+@keyframes toastFlyIn {
+  from {
     opacity: 0;
-    transform: translateX(-50%) translateY(20px);
+    transform: translateX(-50%) scale(0.7);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes toastFlyOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.7);
   }
 }
 

@@ -64,17 +64,15 @@ class EventManager {
   }
 
   handleClick(e) {
-    if (e.target.matches('.drink-btn-content')) {
-      const btn = e.target.closest('.drink-btn');
+    const btn = e.target.closest('.drink-btn');
+    if (btn) {
       btn.classList.add('pressed');
       setTimeout(() => btn.classList.remove('pressed'), 150);
-      this.app.logDrink(JSON.parse(btn.dataset.drink), new Date().toISOString());
-    } else if (e.target.matches('.drink-btn-extra')) {
-      const btn = e.target.closest('.drink-btn');
-      btn.classList.add('pressed');
-      setTimeout(() => btn.classList.remove('pressed'), 150);
-      this.app.showTimePopup(btn.dataset.drink);
-    } else if (e.target.matches('.dot')) {
+      const drink = JSON.parse(btn.dataset.drink);
+      this.app.logDrink(drink, new Date().toISOString());
+      return;
+    }
+    if (e.target.matches('.dot')) {
       this.app.showScreen(+e.target.dataset.index);
     }
   }
@@ -333,13 +331,13 @@ class ConsumeApp {
     // Position the toast
     toast.style.bottom = `4rem`;
     
-    // Add show animation
-    requestAnimationFrame(() => {
+    // Animate fly-in
+    setTimeout(() => {
       toast.style.opacity = '1';
-      toast.style.transform = 'translateX(-50%)';
-    });
+      toast.style.transform = 'translateX(-50%) scale(1)';
+    }, 10);
 
-    // If this is an undo toast, fade it away after 2.5 seconds
+    // If this is an undo toast, fade it away after 1 second
     if (isUndo) {
       setTimeout(() => {
         toast.classList.add('hide');
@@ -347,7 +345,7 @@ class ConsumeApp {
           toast.remove();
           this.activeToasts.delete(toast);
         }, 300);
-      }, 2500);
+      }, 1000);
     }
   }
 
@@ -359,19 +357,19 @@ class ConsumeApp {
         toast.classList.add('released');
         setTimeout(() => {
           toast.classList.remove('released');
+          // Transform to grey undo toast and fade out after 1s
+          toast.classList.add('undo');
+          toast.textContent = `Undid ${this.lastLog.drink_name}`;
+          setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => {
+              toast.remove();
+              this.activeToasts.delete(toast);
+            }, 300);
+          }, 1000);
         }, 150);
       }, 100);
-      const drinkName = this.lastLog.drink_name;
-      if (this.drinkLogger.removeLog(this.lastLog.timestamp_logged)) {
-        this.showToast(`Undid ${drinkName}`, true);
-        setTimeout(() => {
-          toast.classList.add('hide');
-          setTimeout(() => {
-            toast.remove();
-            this.activeToasts.delete(toast);
-          }, 300);
-        }, 2000);
-      }
+      this.drinkLogger.removeLog(this.lastLog.timestamp_logged);
     }
   }
 
