@@ -149,6 +149,7 @@ class ConsumeApp {
       dot.classList.toggle('active', i === index);
     });
     document.querySelector('.screen-indicator').style.display = (index === 3) ? 'none' : '';
+    document.querySelector('.bottom-fade').style.display = (index === 3) ? 'none' : '';
     this.clearToasts();
     if (index === 1) this.renderHistory();
     if (index === 2) this.renderSettings();
@@ -553,15 +554,54 @@ class ConsumeApp {
   renderSuperLog() {
     const container = document.querySelector('.superlog-placeholder');
     if (!container) return;
+    // Side effects list (could be loaded from JSON, hardcoded for now)
+    const sideEffects = [
+      'Headache', 'Nausea', 'Dizziness', 'Fatigue', 'Dry Mouth', 'Anxiety', 'Insomnia', 'Sweating', 'Other'
+    ];
     let html = '';
     html += `<div class="superlog-back" tabindex="0">&#8592;</div>`;
     html += `<div class="superlog-title">Super Log</div>`;
-    html += `<button class="superlog-btn">Add Side Effect</button>`;
-    html += `<button class="superlog-btn">Add Note</button>`;
-    html += `<button class="superlog-btn">Add Custom Event</button>`;
+    html += `<div class="superlog-section"><div class="superlog-label">Side Effects</div>`;
+    html += `<div class="superlog-effects-list">`;
+    sideEffects.forEach(effect => {
+      html += `<label class="superlog-effect"><input type="checkbox" value="${effect}"><span>${effect}</span></label>`;
+    });
+    html += `</div></div>`;
+    html += `<div class="superlog-section"><div class="superlog-label">Note</div>`;
+    html += `<textarea class="superlog-note" placeholder="Write a note..."></textarea></div>`;
+    html += `<div class="superlog-btn-row">
+      <button class="superlog-submit">Submit</button>
+      <button class="superlog-time">...</button>
+    </div>`;
     container.innerHTML = html;
     // Back arrow handler
     container.querySelector('.superlog-back').onclick = () => this.showScreen(2);
+    // Submit handler
+    container.querySelector('.superlog-submit').onclick = () => {
+      // Log the side effect (placeholder)
+      // ...
+      this.showScreen(2);
+    };
+    // Time picker handler (inverted popup)
+    container.querySelector('.superlog-time').onclick = () => {
+      this.showSuperLogTimePopup();
+    };
+  }
+
+  showSuperLogTimePopup() {
+    this.overlay.classList.add('show');
+    this.popup.innerHTML = `
+      <ul class="superlog-popup">
+        <li>15 min ago</li>
+        <li>30 min ago</li>
+        <li>45 min ago</li>
+        <li>60 min ago</li>
+        <li>Custom Time</li>
+      </ul>
+    `;
+    this.popup.style.display = 'block';
+    this.popup.classList.add('superlog-popup-menu');
+    this.bindTimeOptions();
   }
 }
 

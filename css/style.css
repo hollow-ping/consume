@@ -541,3 +541,106 @@ body {
   background: #fff;
   color: #000;
 }
+
+.superlog-section {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  padding-left: 1.2rem;
+}
+
+.superlog-label {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.7rem;
+  letter-spacing: -0.5px;
+}
+
+.superlog-effects-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.2rem;
+  margin-bottom: 0.7rem;
+}
+
+.superlog-effect {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  user-select: none;
+}
+.superlog-effect input[type="checkbox"] {
+  accent-color: #fff;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid #fff;
+  background: #000;
+  margin-right: 0.3rem;
+}
+
+.superlog-note {
+  width: calc(100% - 2.4rem);
+  margin: 0.2rem 0 0.7rem 0;
+  padding: 0.8rem 0.7rem;
+  background: #111;
+  color: #fff;
+  border: 1.5px solid #fff;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 3.2rem;
+}
+
+.superlog-btn-row {
+  display: flex;
+  width: 100%;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+  padding-left: 1.2rem;
+}
+
+.superlog-submit, .superlog-time {
+  flex: 1 1 0;
+  padding: 1.2rem 0;
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 0.7rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.superlog-submit:active, .superlog-submit:focus,
+.superlog-time:active, .superlog-time:focus {
+  background: #fff;
+  color: #000;
+}
+
+.superlog-popup-menu ul,
+.superlog-popup {
+  background: #000 !important;
+  color: #fff !important;
+  border-radius: 18px;
+  border: 1.5px solid #fff;
+  box-shadow: 0 8px 32px rgba(255,255,255,0.08);
+}
+.superlog-popup li {
+  color: #fff !important;
+  background: #000 !important;
+  border-bottom: 1px solid #fff;
+  font-size: 1.1rem;
+}
+.superlog-popup li:last-child {
+  border-bottom: none;
+}
+.superlog-popup li.pressed {
+  background: #fff !important;
+  color: #000 !important;
+}
