@@ -11,7 +11,7 @@
   <script defer src="js/main.js"></script>
 </head>
 <body>
-  <main id="screens-wrapper">
+  <main id="screens-wrapper" style="transform: translateX(-100vw);">
     <section class="screen" id="screen-history" aria-label="History screen">
       <div class="history-placeholder" role="status">History</div>
     </section>
@@ -42,8 +42,8 @@
 
   <!-- UI Elements -->
   <div class="screen-indicator">
-    <button class="dot" data-index="0" aria-label="History screen" aria-selected="true">•</button>
-    <button class="dot" data-index="1" aria-label="Main screen">•</button>
+    <button class="dot" data-index="0" aria-label="History screen">•</button>
+    <button class="dot" data-index="1" aria-label="Main screen" aria-selected="true">•</button>
     <button class="dot" data-index="2" aria-label="Settings screen">•</button>
   </div>
   <div class="bottom-fade"></div>
