@@ -210,6 +210,7 @@ class ConsumeApp {
       </ul>
     `;
     this.popup.style.display = 'block';
+    this.popup.classList.remove('superlog-popup-menu');
     this.bindTimeOptions();
   }
 

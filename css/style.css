@@ -146,6 +146,29 @@ body {
   animation: fadeIn 0.25s;
 }
 
+.popup-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.popup-menu li {
+  padding: 1rem 2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 1.1rem;
+}
+
+.popup-menu li:hover {
+  background: #f5f5f5;
+}
+
+.popup-menu li.pressed {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+/* Super Log specific styles */
 .popup-menu.superlog-popup-menu {
   background: #000 !important;
   border-color: #fff !important;
@@ -170,6 +193,10 @@ body {
   border-bottom: none;
 }
 
+.popup-menu.superlog-popup-menu li:hover {
+  background: #111 !important;
+}
+
 .popup-menu.superlog-popup-menu li.pressed {
   background: #fff !important;
   color: #000 !important;
@@ -182,12 +209,7 @@ body {
   padding: 1rem;
 }
 
-.popup-menu.superlog-popup-menu.grid3 {
-  background: #000 !important;
-  border-color: #fff !important;
-  box-shadow: 0 8px 32px rgba(255,255,255,0.08);
-}
-
+/* Regular picker button styles */
 .picker-btn {
   background: var(--background-color);
   border: 1px solid var(--border-color);
@@ -198,6 +220,16 @@ body {
   transition: background-color var(--transition-speed);
 }
 
+.picker-btn:hover {
+  background: #f5f5f5;
+}
+
+.picker-btn.selected {
+  background: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+/* Super Log picker button styles */
 .popup-menu.superlog-popup-menu .picker-btn {
   background: #000 !important;
   border-color: #fff !important;
