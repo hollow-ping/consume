@@ -12,15 +12,15 @@
 </head>
 <body>
   <main id="screens-wrapper">
+    <section class="screen" id="screen-history" aria-label="History screen">
+      <div class="history-placeholder" role="status">History</div>
+    </section>
+    
     <section class="screen" id="screen-main" aria-label="Main screen">
       <div id="drink-buttons" class="drink-buttons"></div>
     </section>
     
-    <section class="screen" id="screen-two" aria-label="History screen">
-      <div class="history-placeholder" role="status">History</div>
-    </section>
-    
-    <section class="screen" id="screen-three" aria-label="Settings screen">
+    <section class="screen" id="screen-settings" aria-label="Settings screen">
       <div class="settings-placeholder" role="status">Settings</div>
     </section>
     <section class="screen" id="screen-superlog" aria-label="Super Log screen" style="background: #000;">
@@ -41,13 +41,11 @@
   </div>
 
   <!-- UI Elements -->
-  <nav class="screen-indicator" role="tablist" aria-label="Screen navigation">
-    <button class="dot" data-index="0" role="tab" aria-selected="true" aria-label="Main screen">●</button>
-    <button class="dot" data-index="1" role="tab" aria-selected="false" aria-label="History screen">●</button>
-    <button class="dot" data-index="2" role="tab" aria-selected="false" aria-label="Settings screen">●</button>
-  </nav>
-
-  <!-- Fixed bottom fade -->
-  <div class="bottom-fade" role="presentation"></div>
+  <div class="screen-indicator">
+    <button class="dot" data-index="0" aria-label="History screen" aria-selected="true">•</button>
+    <button class="dot" data-index="1" aria-label="Main screen">•</button>
+    <button class="dot" data-index="2" aria-label="Settings screen">•</button>
+  </div>
+  <div class="bottom-fade"></div>
 </body>
 </html>

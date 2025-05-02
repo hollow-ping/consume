@@ -115,7 +115,7 @@ class ConsumeApp {
     this.touchStartX = null;
     this.lastLog = null;
     this.lastDrink = null;
-    this.currentScreen = 0;
+    this.currentScreen = 1;
     this.activeToasts = new Set();
     this.historyExpanded = JSON.parse(localStorage.getItem('history_expanded') || 'false');
     
@@ -151,9 +151,12 @@ class ConsumeApp {
     document.querySelector('.screen-indicator').style.display = (index === 3) ? 'none' : '';
     document.querySelector('.bottom-fade').style.display = (index === 3) ? 'none' : '';
     this.clearToasts();
-    if (index === 1) this.renderHistory();
+    if (index === 0) this.renderHistory();
     if (index === 2) this.renderSettings();
-    if (index === 3) this.renderSuperLog();
+    if (index === 3) {
+      this.renderSuperLog();
+      document.querySelector('#screen-superlog').scrollTop = 0;
+    }
   }
 
   async loadDrinks() {
