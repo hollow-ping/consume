@@ -120,6 +120,10 @@ class ConsumeApp {
     this.historyExpanded = JSON.parse(localStorage.getItem('history_expanded') || 'false');
     
     window.consumeApp = this; // Make app instance globally available
+    
+    // Set initial position before any animations can occur
+    document.getElementById('screens-wrapper').style.transform = 'translateX(-100vw)';
+    
     this.initializeApp();
     this.loadDrinks();
     this.renderHistory();

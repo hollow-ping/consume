@@ -256,7 +256,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 0.8rem;
+  gap: 1rem;
   z-index: 10;
   background: transparent;
   padding: 0.5rem;
@@ -268,7 +268,7 @@ body {
   color: var(--text-color);
   opacity: 0.3;
   cursor: pointer;
-  font-size: 2rem;
+  font-size: 4rem;
   transition: opacity var(--transition-speed);
   padding: 0.5rem;
   outline: none;
