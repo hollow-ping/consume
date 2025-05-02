@@ -559,7 +559,55 @@ body {
 .superlog-effects-list {
   width: calc(100% - 2.4rem);
   margin-bottom: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.superlog-effect-btn {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(.4,2,.6,1);
   position: relative;
+  display: flex;
+  align-items: stretch;
+  min-height: 60px; /* 75% of drink button height (81px) */
+  overflow: hidden;
+  width: 100%;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  border-radius: 8px;
+  color: #fff;
+  border-color: #fff;
+}
+
+.superlog-effect-btn-content {
+  font-size: 1.2rem;
+  font-weight: 500;
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  border: none;
+  background: transparent !important;
+  transition: color 0.2s, background 0.2s;
+}
+
+.superlog-effect-btn.selected {
+  background: #fff !important;
+  color: #000;
+}
+
+.superlog-effect-btn.pressed {
+  transform: scale(0.96);
+  box-shadow: 0 2px 6px var(--shadow-color);
+}
+
+.superlog-effect-btn.pressed .superlog-effect-btn-content {
+  background-color: #fff !important;
+  color: #000;
 }
 
 .superlog-effects-select {

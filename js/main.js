@@ -563,11 +563,11 @@ class ConsumeApp {
     html += `<div class="superlog-title">Super Log</div>`;
     html += `<div class="superlog-section"><div class="superlog-label">Side Effects</div>`;
     html += `<div class="superlog-effects-list">`;
-    html += `<select class="superlog-effects-select" multiple size="4">`;
     sideEffects.forEach(effect => {
-      html += `<option value="${effect}">${effect}</option>`;
+      html += `<button class="superlog-effect-btn" data-effect="${effect}">
+        <div class="superlog-effect-btn-content">${effect}</div>
+      </button>`;
     });
-    html += `</select>`;
     html += `</div></div>`;
     html += `<div class="superlog-section"><div class="superlog-label">Note</div>`;
     html += `<textarea class="superlog-note" placeholder="Write a note..."></textarea></div>`;
@@ -578,8 +578,29 @@ class ConsumeApp {
       </button>
     </div>`;
     container.innerHTML = html;
+
     // Back arrow handler
     container.querySelector('.superlog-back').onclick = () => this.showScreen(2);
+
+    // Side effect button handlers
+    const selectedEffects = new Set();
+    container.querySelectorAll('.superlog-effect-btn').forEach(btn => {
+      btn.onclick = () => {
+        const effect = btn.dataset.effect;
+        btn.classList.add('pressed');
+        setTimeout(() => {
+          btn.classList.remove('pressed');
+          if (selectedEffects.has(effect)) {
+            selectedEffects.delete(effect);
+            btn.classList.remove('selected');
+          } else {
+            selectedEffects.add(effect);
+            btn.classList.add('selected');
+          }
+        }, 150);
+      };
+    });
+
     // Submit handler
     container.querySelector('.superlog-submit').onclick = (e) => {
       const btn = e.currentTarget;
@@ -590,16 +611,14 @@ class ConsumeApp {
         return;
       }
       
-      const selectedEffects = Array.from(container.querySelector('.superlog-effects-select').selectedOptions)
-        .map(option => option.value);
       const note = container.querySelector('.superlog-note').value;
       
-      if (selectedEffects.length > 0 || note.trim()) {
+      if (selectedEffects.size > 0 || note.trim()) {
         btn.classList.add('pressed');
         setTimeout(() => {
           btn.classList.remove('pressed');
           // Log the side effects and note (placeholder)
-          console.log('Selected effects:', selectedEffects);
+          console.log('Selected effects:', Array.from(selectedEffects));
           console.log('Note:', note);
           this.showToast('✔️', true);
           setTimeout(() => this.showScreen(2), 1000);
