@@ -146,39 +146,33 @@ body {
   animation: fadeIn 0.25s;
 }
 
-.popup-menu ul {
-  width: 100%;
-  max-width: 100%;
-  list-style: none;
-  margin: 0;
+.popup-menu.superlog-popup-menu {
+  background: #000 !important;
+  border-color: #fff !important;
+  box-shadow: 0 8px 32px rgba(255,255,255,0.08);
   padding: 0;
 }
 
-.popup-menu li {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 1.2rem 2rem;
-  text-align: center;
-  border-bottom: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: background-color var(--transition-speed);
-  margin: 0;
-  display: block;
+.popup-menu.superlog-popup-menu ul {
+  background: #000 !important;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.popup-menu.superlog-popup-menu li {
+  color: #fff !important;
+  background: #000 !important;
+  border-bottom: 1px solid #fff;
   font-size: 1.1rem;
 }
 
-.popup-menu li:last-child {
+.popup-menu.superlog-popup-menu li:last-child {
   border-bottom: none;
 }
 
-.popup-menu li:hover {
-  background-color: var(--secondary-color);
-}
-
-.popup-menu li.pressed {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+.popup-menu.superlog-popup-menu li.pressed {
+  background: #fff !important;
+  color: #000 !important;
 }
 
 .popup-menu.grid3 {
@@ -186,6 +180,12 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
   padding: 1rem;
+}
+
+.popup-menu.superlog-popup-menu.grid3 {
+  background: #000 !important;
+  border-color: #fff !important;
+  box-shadow: 0 8px 32px rgba(255,255,255,0.08);
 }
 
 .picker-btn {
@@ -198,18 +198,24 @@ body {
   transition: background-color var(--transition-speed);
 }
 
-.picker-btn:hover {
-  background-color: var(--secondary-color);
+.popup-menu.superlog-popup-menu .picker-btn {
+  background: #000 !important;
+  border-color: #fff !important;
+  color: #fff !important;
 }
 
-.picker-btn.selected {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+.popup-menu.superlog-popup-menu .picker-btn:hover {
+  background: #111 !important;
 }
 
-.picker-btn.pressed {
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
+.popup-menu.superlog-popup-menu .picker-btn.selected {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+.popup-menu.superlog-popup-menu .picker-btn.pressed {
+  background: #fff !important;
+  color: #000 !important;
 }
 
 .screen-indicator {

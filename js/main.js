@@ -572,7 +572,7 @@ class ConsumeApp {
     html += `<textarea class="superlog-note" placeholder="Write a note..."></textarea></div>`;
     html += `<div class="superlog-btn-row">
       <button class="superlog-submit">
-        <div class="superlog-submit-content">Submit</div>
+        <div class="superlog-submit-content">Log</div>
         <div class="superlog-submit-extra">⋯</div>
       </button>
     </div>`;
@@ -619,8 +619,8 @@ class ConsumeApp {
           // Log the side effects and note (placeholder)
           console.log('Selected effects:', Array.from(selectedEffects));
           console.log('Note:', note);
+          this.showScreen(2);
           this.showToast('✔️', true);
-          setTimeout(() => this.showScreen(2), 1000);
         }, 150);
       }
     };
