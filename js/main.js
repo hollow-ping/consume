@@ -127,7 +127,7 @@ class ConsumeApp {
 
   initializeApp() {
     this.setupUIElements();
-    this.showScreen(0);
+    this.showScreen(1);
   }
 
   setupUIElements() {
