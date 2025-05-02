@@ -560,7 +560,6 @@ class ConsumeApp {
     ];
     let html = '';
     html += `<div class="superlog-back" tabindex="0">&#8592;</div>`;
-    html += `<div class="superlog-title">Super Log</div>`;
     html += `<div class="superlog-section"><div class="superlog-label">Side Effects</div>`;
     html += `<div class="superlog-effects-list">`;
     sideEffects.forEach(effect => {
