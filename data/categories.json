@@ -1,0 +1,29 @@
+{
+  "categories": [
+    {
+      "id": "beer",
+      "name": "Beer",
+      "order": 1
+    },
+    {
+      "id": "wine",
+      "name": "Wine",
+      "order": 2
+    },
+    {
+      "id": "cocktail",
+      "name": "Cocktails",
+      "order": 3
+    },
+    {
+      "id": "spirits",
+      "name": "Spirits",
+      "order": 4
+    },
+    {
+      "id": "na",
+      "name": "Non-Alcoholic",
+      "order": 5
+    }
+  ]
+} 

@@ -1,52 +1,67 @@
-[
-  {
-    "drink_category": "Beer",
-    "drink_name": "Light Beer",
-    "units": 0.6
-  },
-  {
-    "drink_category": "Beer",
-    "drink_name": "IPA",
-    "units": 0.75
-  },
-  {
-    "drink_category": "Wine",
-    "drink_name": "Red Wine",
-    "units": 1.2
-  },
-  {
-    "drink_category": "Wine",
-    "drink_name": "White Wine",
-    "units": 1.1
-  },
-  {
-    "drink_category": "Cocktail",
-    "drink_name": "Old Fashioned",
-    "units": 1.5
-  },
-  {
-    "drink_category": "Cocktail",
-    "drink_name": "Margarita",
-    "units": 1.4
-  },
-  {
-    "drink_category": "Spirits",
-    "drink_name": "Whiskey Shot",
-    "units": 1.0
-  },
-  {
-    "drink_category": "Spirits",
-    "drink_name": "Tequila Shot",
-    "units": 1.0
-  },
-  {
-    "drink_category": "Mocktail",
-    "drink_name": "Virgin Mojito",
-    "units": 0.0
-  },
-  {
-    "drink_category": "Other",
-    "drink_name": "Hard Seltzer",
-    "units": 0.8
-  }
-]
+{
+  "drinks": [
+    {
+      "id": "ipa",
+      "name": "IPA",
+      "category_id": "beer",
+      "units": 2.0,
+      "order": 1
+    },
+    {
+      "id": "lager",
+      "name": "Lager",
+      "category_id": "beer",
+      "units": 1.7,
+      "order": 2
+    },
+    {
+      "id": "red_wine",
+      "name": "Red Wine",
+      "category_id": "wine",
+      "units": 1.5,
+      "order": 3
+    },
+    {
+      "id": "white_wine",
+      "name": "White Wine",
+      "category_id": "wine",
+      "units": 1.5,
+      "order": 4
+    },
+    {
+      "id": "old_fashioned",
+      "name": "Old Fashioned",
+      "category_id": "cocktail",
+      "units": 2.2,
+      "order": 5
+    },
+    {
+      "id": "margarita",
+      "name": "Margarita",
+      "category_id": "cocktail",
+      "units": 2.0,
+      "order": 6
+    },
+    {
+      "id": "whiskey_shot",
+      "name": "Whiskey Shot",
+      "category_id": "spirits",
+      "units": 1.0,
+      "order": 7
+    },
+    {
+      "id": "tequila_shot",
+      "name": "Tequila Shot",
+      "category_id": "spirits",
+      "units": 1.0,
+      "order": 8
+    },
+    {
+      "id": "virgin_mojito",
+      "name": "Virgin Mojito",
+      "category_id": "na",
+      "units": 0.0,
+      "order": 9
+    }
+  ]
+}

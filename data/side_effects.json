@@ -1,0 +1,49 @@
+{
+  "side_effects": [
+    {
+      "id": "headache",
+      "name": "Headache",
+      "order": 1
+    },
+    {
+      "id": "nausea",
+      "name": "Nausea",
+      "order": 2
+    },
+    {
+      "id": "dizziness",
+      "name": "Dizziness",
+      "order": 3
+    },
+    {
+      "id": "fatigue",
+      "name": "Fatigue",
+      "order": 4
+    },
+    {
+      "id": "dry_mouth",
+      "name": "Dry Mouth",
+      "order": 5
+    },
+    {
+      "id": "anxiety",
+      "name": "Anxiety",
+      "order": 6
+    },
+    {
+      "id": "insomnia",
+      "name": "Insomnia",
+      "order": 7
+    },
+    {
+      "id": "sweating",
+      "name": "Sweating",
+      "order": 8
+    },
+    {
+      "id": "other",
+      "name": "Other",
+      "order": 9
+    }
+  ]
+} 

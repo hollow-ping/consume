@@ -119,65 +119,72 @@ class ConsumeApp {
     this.activeToasts = new Set();
     this.historyExpanded = JSON.parse(localStorage.getItem('history_expanded') || 'false');
     
+    // Store loaded data
+    this.categories = [];
+    this.drinks = [];
+    this.sideEffects = [];
+    
     window.consumeApp = this; // Make app instance globally available
     this.initializeApp();
-    this.loadDrinks();
-    this.renderHistory();
   }
 
-  initializeApp() {
+  async initializeApp() {
     this.setupUIElements();
+    await this.loadAllData();
     this.showScreen(1);
   }
 
-  setupUIElements() {
-    this.overlay = document.getElementById('overlay');
-    this.popup = document.getElementById('popup-menu');
-    this.wrapper = document.getElementById('screens-wrapper');
-    
-    this.overlay.onclick = () => this.closePopup();
-    this.popup.onclick = e => e.stopPropagation();
-  }
-
-  showScreen(index) {
-    if (index < 0) index = 0;
-    if (index > 3) index = 3;
-    this.currentScreen = index;
-    this.wrapper.style.transform = `translateX(-${index * 100}vw)`;
-    document.querySelectorAll('.screen-indicator .dot').forEach((dot, i) => {
-      dot.setAttribute('aria-selected', i === index);
-      dot.classList.toggle('active', i === index);
-    });
-    document.querySelector('.screen-indicator').style.display = (index === 3) ? 'none' : '';
-    document.querySelector('.bottom-fade').style.display = (index === 3) ? 'none' : '';
-    this.clearToasts();
-    if (index === 0) this.renderHistory();
-    if (index === 2) this.renderSettings();
-    if (index === 3) {
-      this.renderSuperLog();
-      document.querySelector('#screen-superlog').scrollTop = 0;
-    }
-  }
-
-  async loadDrinks() {
+  async loadAllData() {
     try {
-      const response = await fetch('data/drinks.json');
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const drinks = await response.json();
-      this.renderDrinks(drinks);
+      // Load all data in parallel
+      const [categoriesResponse, drinksResponse, sideEffectsResponse] = await Promise.all([
+        fetch('data/categories.json'),
+        fetch('data/drinks.json'),
+        fetch('data/side_effects.json')
+      ]);
+
+      if (!categoriesResponse.ok || !drinksResponse.ok || !sideEffectsResponse.ok) {
+        throw new Error('Failed to load one or more data files');
+      }
+
+      const [categoriesData, drinksData, sideEffectsData] = await Promise.all([
+        categoriesResponse.json(),
+        drinksResponse.json(),
+        sideEffectsResponse.json()
+      ]);
+
+      // Store the loaded data
+      this.categories = categoriesData.categories.sort((a, b) => a.order - b.order);
+      this.drinks = drinksData.drinks.sort((a, b) => a.order - b.order);
+      this.sideEffects = sideEffectsData.side_effects.sort((a, b) => a.order - b.order);
+
+      // Render the drinks
+      this.renderDrinks();
     } catch (error) {
-      ErrorHandler.handleError(error, 'Failed to load drinks');
+      console.error('Error loading data:', error);
+      this.showToast('❌ Failed to load app data');
     }
   }
 
-  renderDrinks(drinks) {
+  renderDrinks() {
     const container = document.getElementById('drink-buttons');
-    container.innerHTML = drinks.map(drink => `
-      <div class="drink-btn" data-drink='${JSON.stringify(drink)}'>
-        <div class="drink-btn-content">${drink.drink_name}</div>
-        <div class="drink-btn-extra">⋯</div>
-      </div>
-    `).join('');
+    if (!container) return;
+
+    container.innerHTML = this.drinks.map(drink => {
+      const category = this.categories.find(c => c.id === drink.category_id);
+      return `
+        <div class="drink-btn" data-drink='${JSON.stringify({
+          drink_id: drink.id,
+          drink_name: drink.name,
+          category_id: drink.category_id,
+          category_name: category?.name || '',
+          units: drink.units
+        })}'>
+          <div class="drink-btn-content">${drink.name}</div>
+          <div class="drink-btn-extra">⋯</div>
+        </div>
+      `;
+    }).join('');
   }
 
   logDrink(drink, timestamp) {
@@ -185,7 +192,7 @@ class ConsumeApp {
       const log = {
         timestamp_logged: new Date().toISOString(),
         timestamp: timestamp,
-        drink_category: drink.drink_category,
+        drink_category: drink.category_id,
         drink_name: drink.drink_name,
         units: drink.units
       };
@@ -558,19 +565,18 @@ class ConsumeApp {
   renderSuperLog() {
     const container = document.querySelector('.superlog-placeholder');
     if (!container) return;
-    // Side effects list (could be loaded from JSON, hardcoded for now)
-    const sideEffects = [
-      'Headache', 'Nausea', 'Dizziness', 'Fatigue', 'Dry Mouth', 'Anxiety', 'Insomnia', 'Sweating', 'Other'
-    ];
+
     let html = '';
     html += `<div class="superlog-back" tabindex="0">&#8592;</div>`;
     html += `<div class="superlog-section"><div class="superlog-label">Side Effects</div>`;
     html += `<div class="superlog-effects-list">`;
-    sideEffects.forEach(effect => {
-      html += `<button class="superlog-effect-btn" data-effect="${effect}">
-        <div class="superlog-effect-btn-content">${effect}</div>
+    
+    this.sideEffects.forEach(effect => {
+      html += `<button class="superlog-effect-btn" data-effect="${effect.id}">
+        <div class="superlog-effect-btn-content">${effect.name}</div>
       </button>`;
     });
+    
     html += `</div></div>`;
     html += `<div class="superlog-section"><div class="superlog-label">Note</div>`;
     html += `<textarea class="superlog-note" placeholder="Write a note..."></textarea></div>`;
