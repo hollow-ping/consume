@@ -563,28 +563,48 @@ class ConsumeApp {
     html += `<div class="superlog-title">Super Log</div>`;
     html += `<div class="superlog-section"><div class="superlog-label">Side Effects</div>`;
     html += `<div class="superlog-effects-list">`;
+    html += `<select class="superlog-effects-select" multiple size="4">`;
     sideEffects.forEach(effect => {
-      html += `<label class="superlog-effect"><input type="checkbox" value="${effect}"><span>${effect}</span></label>`;
+      html += `<option value="${effect}">${effect}</option>`;
     });
+    html += `</select>`;
     html += `</div></div>`;
     html += `<div class="superlog-section"><div class="superlog-label">Note</div>`;
     html += `<textarea class="superlog-note" placeholder="Write a note..."></textarea></div>`;
     html += `<div class="superlog-btn-row">
-      <button class="superlog-submit">Submit</button>
-      <button class="superlog-time">...</button>
+      <button class="superlog-submit">
+        <div class="superlog-submit-content">Submit</div>
+        <div class="superlog-submit-extra">⋯</div>
+      </button>
     </div>`;
     container.innerHTML = html;
     // Back arrow handler
     container.querySelector('.superlog-back').onclick = () => this.showScreen(2);
     // Submit handler
-    container.querySelector('.superlog-submit').onclick = () => {
-      // Log the side effect (placeholder)
-      // ...
-      this.showScreen(2);
-    };
-    // Time picker handler (inverted popup)
-    container.querySelector('.superlog-time').onclick = () => {
-      this.showSuperLogTimePopup();
+    container.querySelector('.superlog-submit').onclick = (e) => {
+      const btn = e.currentTarget;
+      if (e.target.classList.contains('superlog-submit-extra')) {
+        btn.classList.add('pressed');
+        setTimeout(() => btn.classList.remove('pressed'), 150);
+        this.showSuperLogTimePopup();
+        return;
+      }
+      
+      const selectedEffects = Array.from(container.querySelector('.superlog-effects-select').selectedOptions)
+        .map(option => option.value);
+      const note = container.querySelector('.superlog-note').value;
+      
+      if (selectedEffects.length > 0 || note.trim()) {
+        btn.classList.add('pressed');
+        setTimeout(() => {
+          btn.classList.remove('pressed');
+          // Log the side effects and note (placeholder)
+          console.log('Selected effects:', selectedEffects);
+          console.log('Note:', note);
+          this.showToast('✔️', true);
+          setTimeout(() => this.showScreen(2), 1000);
+        }, 150);
+      }
     };
   }
 

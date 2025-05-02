@@ -557,29 +557,45 @@ body {
 }
 
 .superlog-effects-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem 1.2rem;
+  width: calc(100% - 2.4rem);
   margin-bottom: 0.7rem;
+  position: relative;
 }
 
-.superlog-effect {
+.superlog-effects-select {
+  width: 100%;
+  padding: 0.8rem;
+  background: #111;
   color: #fff;
+  border: 1.5px solid #fff;
+  border-radius: 0.5rem;
   font-size: 1.1rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+  font-family: inherit;
+  appearance: none;
   cursor: pointer;
-  user-select: none;
 }
-.superlog-effect input[type="checkbox"] {
-  accent-color: #fff;
-  width: 1.2rem;
-  height: 1.2rem;
-  border: 2px solid #fff;
-  background: #000;
-  margin-right: 0.3rem;
+
+.superlog-effects-select option {
+  background: #111;
+  color: #fff;
+  padding: 0.8rem;
+}
+
+.superlog-effects-select:focus {
+  outline: none;
+  border-color: #fff;
+}
+
+/* Custom dropdown arrow */
+.superlog-effects-list::after {
+  content: "▼";
+  font-size: 0.8rem;
+  color: #fff;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .superlog-note {
@@ -593,19 +609,18 @@ body {
   font-size: 1.1rem;
   font-family: inherit;
   resize: vertical;
-  min-height: 3.2rem;
+  min-height: 6.4rem; /* Doubled from 3.2rem */
 }
 
 .superlog-btn-row {
   display: flex;
-  width: 100%;
-  gap: 0.7rem;
-  margin-top: 1.2rem;
-  padding-left: 1.2rem;
+  width: calc(100% - 2.4rem);
+  margin: 1.2rem 1.2rem;
+  padding: 0;
 }
 
-.superlog-submit, .superlog-time {
-  flex: 1 1 0;
+.superlog-submit {
+  width: 100%;
   padding: 1.2rem 0;
   background: transparent;
   color: #fff;
@@ -616,7 +631,66 @@ body {
   letter-spacing: -0.5px;
   cursor: pointer;
   transition: background 0.18s, color 0.18s;
+  display: flex;
+  align-items: stretch;
+  min-height: 81px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(255,255,255,0.08);
 }
+
+.superlog-submit-content,
+.superlog-submit-extra {
+  background: transparent !important;
+  transition: color 0.2s, background 0.2s;
+}
+
+.superlog-submit-content {
+  font-size: 1.3rem;
+  font-weight: 500;
+  width: 75%;
+  padding: 1.5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  border: none;
+}
+
+.superlog-submit-extra {
+  font-size: 2rem;
+  opacity: 0.5;
+  width: 25%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.superlog-submit.pressed {
+  transform: scale(0.96);
+  box-shadow: 0 2px 6px rgba(255,255,255,0.08);
+}
+
+.superlog-submit.pressed .superlog-submit-content,
+.superlog-submit.pressed .superlog-submit-extra {
+  background-color: #fff !important;
+  color: #000;
+  opacity: 1;
+}
+
+.superlog-time {
+  width: auto;
+  min-width: 4rem;
+  padding: 1.2rem;
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 0.7rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+
 .superlog-submit:active, .superlog-submit:focus,
 .superlog-time:active, .superlog-time:focus {
   background: #fff;
